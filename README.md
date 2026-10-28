@@ -5,6 +5,7 @@ Vidriera de muestras de webs a medida de Nova Softwares.
 - `/` — la vidriera: cada muestra con su captura, "Ver web", "Ver en celular" y "Quiero una así" (WhatsApp).
 - `/vauren` — Vauren, relojería de lujo.
 - `/desvelo` — Desvelo, ropa urbana.
+- `/lindero` — Lindero, desarrolladora de casas.
 
 Todas las marcas de las muestras son inventadas.
 
