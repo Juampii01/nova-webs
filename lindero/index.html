@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lindero Casas a medida</title>
+<meta name="description" content="Lindero construye casas a medida en barrios cerrados de Buenos Aires, del plano a la llave, con precio cerrado en dólares.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Lindero: la casa se construye con el scroll. Fondo blanco cal, tinta azul de plano, amarillo de obra solo para acciones.
+   Títulos condensados de cartel de obra (Big Shoulders), texto en Instrument Sans y cotas de plano en Plex Mono. */
+:root{
+  --cal:#f1f3f4;
+  --blanco:#ffffff;
+  --tinta:#0d1b33;
+  --plano:#1d4f9c;
+  --gris:#5d6878;
+  --linea:#cbd2db;
+  --obra:#f2b705;
+  --display:"Big Shoulders Display", "Arial Narrow", Arial, sans-serif;
+  --texto:"Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  --cota:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --margen:max(16px, 4vw);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cal);color:var(--tinta);font-family:var(--texto);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--obra);outline-offset:3px}
+h1,h2,h3{font-family:var(--display);font-weight:800;line-height:.9;letter-spacing:.005em;text-wrap:balance}
+
+/* barra */
+.barra{position:fixed;inset:0 0 auto;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:24px;padding:16px max(var(--margen),env(safe-area-inset-left,0px));color:var(--blanco);transition:background .35s,color .35s}
+.barra.solida{background:var(--cal);color:var(--tinta);box-shadow:0 1px 0 var(--linea)}
+.logo{display:flex;align-items:baseline;gap:10px;text-decoration:none}
+.logo b{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:.08em}
+.logo span{font-size:13px;opacity:.8}
+.barra nav{display:flex;align-items:center;gap:28px;font-size:15px}
+.barra nav a{text-decoration:none}
+.barra nav a:not(.boton):hover{text-decoration:underline;text-underline-offset:4px}
+.boton{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:3px;background:var(--obra);color:var(--tinta);font-weight:600;font-size:15px;text-decoration:none;border:0;cursor:pointer;transition:background .2s}
+.boton:hover{background:#ffcd2e}
+
+/* la obra: escena fija que avanza con el scroll */
+.obra{position:relative;height:640vh;background:var(--tinta)}
+.obra__escena{position:sticky;top:0;height:100vh;overflow:hidden}
+.obra__foto{position:absolute;inset:0;opacity:0}
+.obra__foto:first-child{opacity:1}
+.obra__foto img{width:100%;height:100%;object-fit:cover;object-position:50% 60%}
+.obra__velo{position:absolute;inset:0;background:linear-gradient(90deg,rgba(9,19,38,.72) 0%,rgba(9,19,38,.35) 38%,rgba(9,19,38,0) 62%),linear-gradient(0deg,rgba(9,19,38,.65) 0%,rgba(9,19,38,0) 30%);pointer-events:none}
+.obra__textos{position:absolute;left:var(--margen);bottom:clamp(110px,18vh,190px);width:min(560px,86vw);color:var(--blanco)}
+.etapa{position:absolute;left:0;bottom:0;opacity:0}
+.etapa:first-child{opacity:1}
+.etapa__semana{font-family:var(--cota);font-size:13px;letter-spacing:.02em;color:var(--obra);margin-bottom:14px}
+.etapa h1,.etapa h2{font-size:clamp(56px,8.5vw,138px);margin-bottom:18px}
+.etapa p{max-width:40ch;color:#dfe5ee;font-size:18px}
+.etapa .boton{margin-top:24px}
+.obra__linea{position:absolute;left:var(--margen);right:var(--margen);bottom:40px;color:var(--blanco)}
+.obra__linea ol{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);border-top:1px solid rgba(255,255,255,.35)}
+.obra__linea li{position:relative;padding-top:12px;font-family:var(--cota);font-size:12px;color:rgba(255,255,255,.55);transition:color .3s}
+.obra__linea li::before{content:"";position:absolute;left:0;top:-5px;width:9px;height:9px;border-radius:50%;background:var(--tinta);border:1px solid rgba(255,255,255,.55);transition:background .3s,border-color .3s}
+.obra__linea li.hecha{color:var(--blanco)}
+.obra__linea li.hecha::before{background:var(--obra);border-color:var(--obra)}
+.obra__avance{position:absolute;left:0;top:-1px;height:2px;width:100%;background:var(--obra);transform-origin:left;transform:scaleX(0)}
+.obra__aviso{position:absolute;right:var(--margen);bottom:clamp(110px,18vh,190px);color:rgba(255,255,255,.75);font-size:14px;writing-mode:vertical-rl;transform:rotate(180deg)}
+
+/* propuesta */
+.propuesta{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:32px 80px;padding:clamp(90px,14vh,160px) var(--margen);align-items:end}
+.propuesta h2{font-size:clamp(48px,6.4vw,104px)}
+.propuesta p{font-size:20px;max-width:46ch}
+.propuesta p + p{margin-top:16px;color:var(--gris);font-size:17px}
+
+/* modelos */
+.modelos{padding:0 var(--margen) clamp(90px,14vh,160px)}
+.modelos__cabeza{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:28px;border-bottom:2px solid var(--tinta);flex-wrap:wrap}
+.modelos__cabeza h2{font-size:clamp(44px,5.4vw,88px)}
+.modelos__cabeza p{color:var(--gris);max-width:40ch}
+.modelo{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px 56px;padding:44px 0;border-bottom:1px solid var(--linea);align-items:center}
+.modelo:nth-child(even){grid-template-columns:minmax(0,1fr) minmax(0,1.5fr)}
+.modelo:nth-child(even) .modelo__foto{order:2}
+.modelo__foto{overflow:hidden;aspect-ratio:4/3;background:#dde3e9}
+.modelo__foto img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.modelo:hover .modelo__foto img{transform:scale(1.03)}
+.modelo h3{font-size:clamp(44px,4.6vw,76px);margin-bottom:10px}
+.modelo__bajada{color:var(--gris);margin-bottom:22px;max-width:40ch}
+.ficha{display:grid;grid-template-columns:auto 1fr;border-top:1px solid var(--linea)}
+.ficha dt,.ficha dd{padding:11px 0;border-bottom:1px solid var(--linea);font-size:15px}
+.ficha dt{color:var(--gris);padding-right:28px}
+.ficha dd{font-family:var(--cota);font-size:14px;text-align:right;font-variant-numeric:tabular-nums}
+.modelo .boton{margin-top:24px}
+
+/* cómo trabajamos */
+.metodo{background:var(--tinta);color:var(--cal);padding:clamp(90px,14vh,160px) var(--margen)}
+.metodo h2{font-size:clamp(48px,6vw,96px);max-width:12ch;margin-bottom:56px}
+.metodo dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px 80px;max-width:1100px}
+.metodo dt{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:.01em;margin-bottom:10px;color:var(--blanco)}
+.metodo dd{color:#b8c3d3;max-width:44ch}
+
+/* presupuesto */
+.presupuesto{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:48px 80px;padding:clamp(90px,14vh,160px) var(--margen)}
+.presupuesto h2{font-size:clamp(48px,6vw,96px)}
+.presupuesto__lead{margin-top:20px;color:var(--gris);max-width:40ch}
+form{display:flex;flex-direction:column;gap:26px}
+fieldset{border:0}
+legend,.campo label{display:block;font-size:14px;color:var(--gris);margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;pointer-events:none}
+.chip span{display:block;padding:10px 16px;border:1px solid var(--linea);border-radius:3px;background:var(--blanco);font-size:15px;cursor:pointer;transition:border-color .2s,background .2s}
+.chip input:checked + span{border-color:var(--tinta);background:var(--tinta);color:var(--blanco)}
+.chip input:focus-visible + span{outline:2px solid var(--obra);outline-offset:2px}
+.campo select,.campo input[type=text]{width:100%;padding:12px 14px;border:1px solid var(--linea);border-radius:3px;background:var(--blanco)}
+.medida{display:flex;align-items:baseline;justify-content:space-between;gap:16px}
+.medida output{font-family:var(--cota);font-size:15px}
+input[type=range]{width:100%;accent-color:var(--plano)}
+.estimado{background:var(--blanco);border:1px solid var(--linea);border-left:4px solid var(--obra);padding:18px 20px}
+.estimado b{display:block;font-family:var(--display);font-weight:800;font-size:44px;line-height:1;margin:4px 0 6px;font-variant-numeric:tabular-nums}
+.estimado small{color:var(--gris);font-size:13px}
+.aviso{font-size:14px;color:var(--gris);min-height:1.3em}
+
+.pie{border-top:1px solid var(--linea);padding:28px var(--margen) 36px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--gris)}
+
+@media (max-width:900px){
+  .barra nav a:not(.boton){display:none}
+  .logo span{display:none}
+  .obra__foto img{object-position:42% 60%}
+  .obra__velo{background:linear-gradient(0deg,rgba(9,19,38,.85) 0%,rgba(9,19,38,.45) 45%,rgba(9,19,38,.1) 70%)}
+  .obra__textos{bottom:110px}
+  .etapa p{font-size:16px}
+  .obra__linea li{font-size:0}
+  .obra__aviso{display:none}
+  .propuesta,.modelo,.modelo:nth-child(even),.presupuesto{grid-template-columns:1fr}
+  .modelo:nth-child(even) .modelo__foto{order:0}
+  .metodo dl{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  .obra{height:auto}
+  .obra__escena{position:relative;height:auto}
+  .obra__foto{position:relative;opacity:1;height:70vh}
+  .obra__foto:not(:first-child){display:none}
+  .etapa:not(:first-child),.obra__linea,.obra__aviso{display:none}
+  *{transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<header class="barra" id="barra">
+  <a class="logo" href="./"><b>LINDERO</b><span>Casas a medida</span></a>
+  <nav aria-label="Secciones">
+    <a href="#modelos">Modelos</a>
+    <a href="#metodo">Cómo construimos</a>
+    <a class="boton" href="#presupuesto">Pedir presupuesto</a>
+  </nav>
+</header>
+
+<main>
+  <section class="obra" id="obra" aria-label="La obra, de principio a fin">
+    <div class="obra__escena">
+      <div class="obra__fotos">
+        <div class="obra__foto"><img src="img/plano.jpg" alt="Terreno vacío con la casa dibujada en líneas de plano azul" fetchpriority="high"></div>
+        <div class="obra__foto"><img src="img/platea.jpg" alt="Platea de hormigón recién colada sobre el terreno" loading="lazy"></div>
+        <div class="obra__foto"><img src="img/estructura.jpg" alt="Estructura de hormigón y muros de ladrillo en construcción" loading="lazy"></div>
+        <div class="obra__foto"><img src="img/obra-gris.jpg" alt="La casa en obra gris, con muros y techos terminados" loading="lazy"></div>
+        <div class="obra__foto"><img src="img/terminaciones.jpg" alt="La casa con aberturas colocadas y pintura en curso" loading="lazy"></div>
+        <div class="obra__foto"><img src="img/terminada.jpg" alt="La casa terminada, con revestimiento de madera y jardín" loading="lazy"></div>
+        <div class="obra__foto"><img src="img/noche.jpg" alt="La casa terminada de noche, con las luces encendidas" loading="lazy"></div>
+      </div>
+      <div class="obra__velo"></div>
+
+      <div class="obra__textos">
+        <div class="etapa">
+          <p class="etapa__semana">Semana 0. Proyecto</p>
+          <h1>Del plano a la llave</h1>
+          <p>Diseñamos y construimos tu casa en barrios cerrados de zona norte y sur, con precio cerrado en dólares. Bajá y mirá cómo se levanta.</p>
+        </div>
+        <div class="etapa"><p class="etapa__semana">Semana 4. Fundaciones</p><h2>Platea</h2><p>Estudio de suelo, platea de hormigón H-21 y cañerías bajo piso antes de levantar una sola pared.</p></div>
+        <div class="etapa"><p class="etapa__semana">Semana 10. Estructura</p><h2>Hormigón y ladrillo</h2><p>Columnas, vigas y losa de hormigón armado. Muros de ladrillo cerámico de 18 cm, nada de construcción en seco.</p></div>
+        <div class="etapa"><p class="etapa__semana">Semana 18. Obra gris</p><h2>Techos e instalaciones</h2><p>Aislación hidrófuga y térmica, y las instalaciones de agua, gas y electricidad aprobadas por el gasista y el electricista matriculados.</p></div>
+        <div class="etapa"><p class="etapa__semana">Semana 28. Terminaciones</p><h2>Aberturas y revestimientos</h2><p>Aberturas de aluminio con doble vidrio hermético, revestimiento de madera tratada, revoques y pintura.</p></div>
+        <div class="etapa"><p class="etapa__semana">Semana 34. Entrega</p><h2>Final de obra</h2><p>Parquizado, limpieza y entrega de llaves con el final de obra presentado en el municipio.</p></div>
+        <div class="etapa"><p class="etapa__semana">Tu casa</p><h2>Encendida</h2><p>Treinta y cuatro semanas desde la platea, con un solo precio firmado al principio.</p><a class="boton" href="#presupuesto">Pedir presupuesto</a></div>
+      </div>
+
+      <p class="obra__aviso" aria-hidden="true">Bajá para construir</p>
+      <div class="obra__linea" aria-hidden="true">
+        <ol><li class="hecha">Proyecto</li><li>Platea</li><li>Estructura</li><li>Obra gris</li><li>Terminaciones</li><li>Entrega</li></ol>
+        <i class="obra__avance"></i>
+      </div>
+    </div>
+  </section>
+
+  <section class="propuesta" aria-labelledby="propuesta-titulo">
+    <h2 id="propuesta-titulo">Un precio, firmado antes de empezar</h2>
+    <div>
+      <p>Te pasamos el valor por metro cuadrado en dólares y no se mueve aunque cambie el precio del hormigón. Pagás por etapa terminada, nunca por adelantado.</p>
+      <p>Cada viernes recibís fotos de la obra y el avance en un parte de una página. Si querés visitar, coordinamos con el director de obra.</p>
+    </div>
+  </section>
+
+  <section class="modelos" id="modelos" aria-labelledby="modelos-titulo">
+    <div class="modelos__cabeza">
+      <h2 id="modelos-titulo">Tres modelos para empezar</h2>
+      <p>Todos se adaptan a tu lote y a tu familia: son el punto de partida, no un catálogo cerrado.</p>
+    </div>
+
+    <article class="modelo">
+      <div class="modelo__foto"><img src="img/modelo-ombu.jpg" alt="Casa Ombú: casa de una planta de ladrillo visto con galería de hierro" loading="lazy"></div>
+      <div>
+        <h3>Casa Ombú</h3>
+        <p class="modelo__bajada">Una planta, ladrillo visto y galería de hierro. Pensada para lotes de 600 m².</p>
+        <dl class="ficha">
+          <dt>Superficie cubierta</dt><dd>142 m²</dd>
+          <dt>Dormitorios</dt><dd>3</dd>
+          <dt>Baños</dt><dd>2</dd>
+          <dt>Plazo de obra</dt><dd>26 semanas</dd>
+          <dt>Desde</dt><dd>USD 184.000</dd>
+        </dl>
+        <a class="boton" href="#presupuesto" data-modelo="Casa Ombú">Quiero este modelo</a>
+      </div>
+    </article>
+
+    <article class="modelo">
+      <div class="modelo__foto"><img src="img/modelo-tala.jpg" alt="Casa Tala: casa de dos plantas blanca con pileta y deck" loading="lazy"></div>
+      <div>
+        <h3>Casa Tala</h3>
+        <p class="modelo__bajada">Dos plantas, galería de ancho completo y pileta de 8 × 3,5 m incluida.</p>
+        <dl class="ficha">
+          <dt>Superficie cubierta</dt><dd>288 m²</dd>
+          <dt>Dormitorios</dt><dd>4 en suite</dd>
+          <dt>Baños</dt><dd>5</dd>
+          <dt>Plazo de obra</dt><dd>38 semanas</dd>
+          <dt>Desde</dt><dd>USD 418.000</dd>
+        </dl>
+        <a class="boton" href="#presupuesto" data-modelo="Casa Tala">Quiero este modelo</a>
+      </div>
+    </article>
+
+    <article class="modelo">
+      <div class="modelo__foto"><img src="img/modelo-calden.jpg" alt="Casa Caldén: casa de dos plantas con techo a dos aguas y revestimiento de madera oscura" loading="lazy"></div>
+      <div>
+        <h3>Casa Caldén</h3>
+        <p class="modelo__bajada">Techo de chapa a dos aguas y madera oscura. Para chacras y lotes con vista abierta.</p>
+        <dl class="ficha">
+          <dt>Superficie cubierta</dt><dd>196 m²</dd>
+          <dt>Dormitorios</dt><dd>3</dd>
+          <dt>Baños</dt><dd>3</dd>
+          <dt>Plazo de obra</dt><dd>32 semanas</dd>
+          <dt>Desde</dt><dd>USD 262.000</dd>
+        </dl>
+        <a class="boton" href="#presupuesto" data-modelo="Casa Caldén">Quiero este modelo</a>
+      </div>
+    </article>
+  </section>
+
+  <section class="metodo" id="metodo" aria-labelledby="metodo-titulo">
+    <h2 id="metodo-titulo">Cómo construimos</h2>
+    <dl>
+      <div><dt>Precio cerrado en dólares</dt><dd>El valor por metro cuadrado queda firmado en el contrato. Los cambios que pidas durante la obra se cotizan aparte y por escrito.</dd></div>
+      <div><dt>Pago por certificado</dt><dd>Pagás cada etapa cuando el director de obra la certifica terminada. Sin anticipos grandes ni sorpresas.</dd></div>
+      <div><dt>Parte de obra cada viernes</dt><dd>Fotos, avance de la semana y lo que viene, en una página. Sabés en qué está tu casa sin tener que llamar.</dd></div>
+      <div><dt>Garantía estructural</dt><dd>Diez años sobre estructura y un año sobre instalaciones y terminaciones desde la entrega de llaves.</dd></div>
+    </dl>
+  </section>
+
+  <section class="presupuesto" id="presupuesto" aria-labelledby="presupuesto-titulo">
+    <div>
+      <h2 id="presupuesto-titulo">Pedí tu presupuesto</h2>
+      <p class="presupuesto__lead">Contanos dónde querés construir y cuánto necesitás. Te mostramos un valor orientativo acá mismo y lo afinamos en la primera reunión.</p>
+    </div>
+    <form id="form-presupuesto" novalidate>
+      <fieldset>
+        <legend>¿Tenés lote?</legend>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="lote" value="Sí, en un barrio cerrado" checked><span>Sí, en barrio cerrado</span></label>
+          <label class="chip"><input type="radio" name="lote" value="Sí, en barrio abierto"><span>Sí, en barrio abierto</span></label>
+          <label class="chip"><input type="radio" name="lote" value="Todavía no"><span>Todavía no</span></label>
+        </div>
+      </fieldset>
+      <div class="campo">
+        <label for="zona">Zona</label>
+        <select id="zona" name="zona">
+          <option>Pilar</option><option>Escobar</option><option>Tigre y Nordelta</option><option>Canning</option><option>Otra zona</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="modelo">Modelo</label>
+        <select id="modelo" name="modelo">
+          <option>Todavía no sé</option><option>Casa Ombú</option><option>Casa Tala</option><option>Casa Caldén</option><option>Proyecto propio</option>
+        </select>
+      </div>
+      <div class="campo">
+        <div class="medida"><label for="m2">Metros cuadrados cubiertos</label><output id="m2-valor" for="m2">180 m²</output></div>
+        <input type="range" id="m2" name="m2" min="100" max="400" step="5" value="180">
+      </div>
+      <div class="estimado" aria-live="polite">
+        <small>Valor orientativo de obra</small>
+        <b data-estimado>USD 0</b>
+        <small>A USD 1.290 por m² con terminaciones estándar. No incluye lote ni honorarios del barrio.</small>
+      </div>
+      <div class="campo"><label for="nombre">Tu nombre</label><input type="text" id="nombre" name="nombre" autocomplete="name"></div>
+      <button class="boton" type="submit">Mandar por WhatsApp</button>
+      <p class="aviso" role="status" data-aviso></p>
+    </form>
+  </section>
+</main>
+
+<footer class="pie"><span>Lindero. Casas a medida en Buenos Aires.</span><span>Marca inventada para una muestra de Nova Webs.</span></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+// WhatsApp de la desarrolladora (solo dígitos, con código de país).
+const WHATSAPP = '5490000000000';
+const USD_M2 = 1290;
+
+/* ---------- presupuesto ---------- */
+(function(){
+  const form = document.getElementById('form-presupuesto');
+  const m2 = document.getElementById('m2');
+  const usd = n => 'USD ' + Math.round(n).toLocaleString('es-AR');
+  const actualizar = () => {
+    document.getElementById('m2-valor').textContent = m2.value + ' m²';
+    document.querySelector('[data-estimado]').textContent = usd(m2.value * USD_M2);
+  };
+  m2.addEventListener('input', actualizar); actualizar();
+  document.querySelectorAll('[data-modelo]').forEach(a => a.addEventListener('click', () => { form.modelo.value = a.dataset.modelo; }));
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const aviso = form.querySelector('[data-aviso]');
+    const nombre = form.nombre.value.trim();
+    if (!nombre) { aviso.textContent = 'Escribí tu nombre para saber cómo saludarte.'; form.nombre.focus(); return; }
+    const texto = `Hola Lindero, soy ${nombre}. Quiero un presupuesto.\n- Lote: ${form.lote.value}\n- Zona: ${form.zona.value}\n- Modelo: ${form.modelo.value}\n- Superficie: ${m2.value} m² (orientativo ${usd(m2.value * USD_M2)})`;
+    aviso.textContent = 'Abriendo WhatsApp con tu consulta lista para enviar.';
+    location.href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`;
+  });
+})();
+
+/* ---------- la obra ---------- */
+(function(){
+  const barra = document.getElementById('barra');
+  const obra = document.getElementById('obra');
+  const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const marcarBarra = () => barra.classList.toggle('solida', obra.getBoundingClientRect().bottom < 80);
+  addEventListener('scroll', marcarBarra, {passive: true}); marcarBarra();
+  if (!window.gsap || quieto) return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  if (window.Lenis) {
+    const lenis = new Lenis({lerp: .09});
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(t => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+    document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+      const d = document.querySelector(a.getAttribute('href'));
+      if (d) { e.preventDefault(); lenis.scrollTo(d, {duration: 1.4, offset: -60}); }
+    }));
+  }
+
+  const fotos = gsap.utils.toArray('.obra__foto');
+  const etapas = gsap.utils.toArray('.etapa');
+  const hitos = gsap.utils.toArray('.obra__linea li');
+  const pasos = fotos.length - 1;
+
+  // entrada: el plano se dibuja desde el azul
+  gsap.from(fotos[0].querySelector('img'), {scale: 1.12, filter: 'brightness(.3) saturate(.6)', duration: 2.2, ease: 'power3.out'});
+  gsap.from(etapas[0].children, {opacity: 0, y: 24, duration: 1, stagger: .12, delay: .5, ease: 'power2.out'});
+
+  // cada etapa: la foto nueva aparece y se acerca, el texto cambia y avanza la línea de obra
+  const tl = gsap.timeline({scrollTrigger: {trigger: obra, start: 'top top', end: 'bottom bottom', scrub: .8,
+    onUpdate: s => {
+      const n = Math.min(5, Math.floor(s.progress * pasos * 1.0001));
+      hitos.forEach((h, i) => h.classList.toggle('hecha', i <= n));
+      gsap.set('.obra__avance', {scaleX: Math.min(1, s.progress * pasos / 5)});
+    }}});
+  fotos.forEach((f, i) => gsap.set(f.querySelector('img'), {scale: 1.06}));
+  for (let i = 1; i <= pasos; i++) {
+    tl.to(fotos[i], {opacity: 1, duration: .6, ease: 'none'}, i - 1 + .3)
+      .fromTo(fotos[i].querySelector('img'), {scale: 1.08}, {scale: 1, duration: 1, ease: 'none'}, i - 1 + .3)
+      .to(etapas[i - 1], {opacity: 0, y: -20, duration: .25}, i - 1 + .3)
+      .fromTo(etapas[i], {opacity: 0, y: 24}, {opacity: 1, y: 0, duration: .35}, i - 1 + .62);
+  }
+  tl.to({}, {duration: .4});
+  gsap.to('.obra__aviso', {opacity: 0, scrollTrigger: {trigger: obra, start: 'top top', end: '+=300', scrub: true}});
+
+  addEventListener('load', () => ScrollTrigger.refresh());
+})();
+</script>
+</body>
+</html>
