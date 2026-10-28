@@ -64,6 +64,9 @@ a{color:inherit}
 .detalle.abierto{display:grid}
 .detalle__foto{position:relative;height:min(74vh,720px);aspect-ratio:3/4;justify-self:center}
 .detalle__foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 24px 24px rgba(23,23,26,.16))}
+.tinte{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 24px 24px rgba(23,23,26,.16));--tinte:-15;
+  -webkit-mask-image:linear-gradient(to top,#000 calc(var(--tinte) * 1% - 12%),transparent calc(var(--tinte) * 1% + 12%));
+          mask-image:linear-gradient(to top,#000 calc(var(--tinte) * 1% - 12%),transparent calc(var(--tinte) * 1% + 12%))}
 .etiquetas{position:absolute;right:-14%;top:9%;display:flex;gap:8px;transform-origin:50% 0}
 .etiqueta{width:58px;padding:18px 6px 10px;background:var(--tinta);color:var(--blanco);font-size:10px;line-height:1.2;text-align:center;border-radius:3px;position:relative;transform-origin:50% -20px}
 .etiqueta::before{content:"";position:absolute;left:50%;top:6px;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--blanco)}
@@ -259,15 +262,15 @@ const PRENDAS = [
    colores:[{nombre:'Grafito', hex:'#4a4a4c', img:'img/desvelo-gris.webp'},{nombre:'Hueso', hex:'#ddd3c0', img:'img/desvelo-hueso.webp'},{nombre:'Negro lavado', hex:'#1d1d1f', img:'img/desvelo-negro.webp'}],
    espalda:{Grafito:'img/desvelo-espalda.webp'}},
   {id:'luna', nombre:'Remera Luna', precio:32000, desc:'Corte cuadrado y amplio, celeste lavado. La luna va bordada, no estampada.',
-   colores:[{nombre:'Celeste lavado', hex:'#8fb3d9', img:'img/luna.webp'}]},
+   colores:[{nombre:'Celeste lavado', hex:'#8fb3d9', img:'img/luna.webp'},{nombre:'Lavanda', hex:'#b3a3d4', img:'img/luna-lavanda.webp'},{nombre:'Negro lavado', hex:'#2b2b2e', img:'img/luna-negro.webp'}]},
   {id:'varsity', nombre:'Campera Varsity', precio:96000, desc:'Cuerpo de paño de lana, mangas de cuero ecológico cobalto y luna de felpa aplicada.',
-   colores:[{nombre:'Crudo y cobalto', hex:'#2340ff', img:'img/varsity.webp'}]},
+   colores:[{nombre:'Crudo y cobalto', hex:'#2340ff', img:'img/varsity.webp'},{nombre:'Negro y bordó', hex:'#6a1626', img:'img/varsity-bordo.webp'},{nombre:'Verde y crudo', hex:'#1f4d36', img:'img/varsity-verde.webp'}]},
   {id:'camiseta', nombre:'Camiseta 9', precio:41000, desc:'Camiseta de fútbol de los noventa, en naranja quemado con zigzag negro en los hombros.',
-   colores:[{nombre:'Naranja quemado', hex:'#e2621b', img:'img/camiseta.webp'}]},
+   colores:[{nombre:'Naranja quemado', hex:'#e2621b', img:'img/camiseta.webp'},{nombre:'Celeste y blanco', hex:'#7fb6e6', img:'img/camiseta-celeste.webp'},{nombre:'Negro y naranja', hex:'#1c1c1e', img:'img/camiseta-negra.webp'}]},
   {id:'buzo', nombre:'Buzo Oliva', precio:58000, desc:'Frisa pesada lavada al sol, ruedo cortado a mano y bolsillo canguro.',
-   colores:[{nombre:'Oliva', hex:'#6b7350', img:'img/buzo.webp'}]},
+   colores:[{nombre:'Oliva', hex:'#6b7350', img:'img/buzo.webp'},{nombre:'Gris melange', hex:'#9c9c9f', img:'img/buzo-gris.webp'},{nombre:'Chocolate', hex:'#4b3427', img:'img/buzo-chocolate.webp'}]},
   {id:'bowling', nombre:'Camisa Bowling', precio:45000, desc:'Rayón liviano, cuello abierto y dos paneles negros al frente.',
-   colores:[{nombre:'Crudo y negro', hex:'#efe9db', img:'img/bowling.webp'}]},
+   colores:[{nombre:'Crudo y negro', hex:'#efe9db', img:'img/bowling.webp'},{nombre:'Bordó y crudo', hex:'#701b28', img:'img/bowling-bordo.webp'},{nombre:'Verde agua', hex:'#bfe3cf', img:'img/bowling-verde.webp'}]},
 ];
 const TALLES = ['S','M','L','XL'];
 const AGOTADOS = {varsity:['S'], camiseta:['XL']};   // talles agotados del drop
@@ -309,6 +312,7 @@ const detalle = document.getElementById('detalle');
 const riel = document.getElementById('riel');
 const $d = s => detalle.querySelector(s);
 const foto = $d('[data-img]');
+const elegido = {};
 let actual = -1, color = 0, cara = 'frente', talle = null, origen = null;
 
 function pintar(){
@@ -337,7 +341,7 @@ function pintar(){
 }
 
 function abrir(i, desde){
-  actual = i; color = 0; cara = 'frente'; talle = null; origen = desde;
+  actual = i; color = elegido[i] || 0; cara = 'frente'; talle = null; origen = desde;
   pintar();
   detalle.classList.add('abierto');
   riel.classList.add('atras');
@@ -373,7 +377,7 @@ function cerrar(){
 
 function mover(paso){
   const i = (actual + paso + PRENDAS.length) % PRENDAS.length;
-  const siguiente = () => { actual = i; color = 0; cara = 'frente'; talle = null; origen = contenedor.children[i]; pintar(); };
+  const siguiente = () => { actual = i; color = elegido[i] || 0; cara = 'frente'; talle = null; origen = contenedor.children[i]; pintar(); };
   if (!anima) return siguiente();
   gsap.timeline()
     .to('[data-foto]', {xPercent: -40 * paso, opacity: 0, duration: .25, ease: 'power2.in'})
@@ -382,7 +386,27 @@ function mover(paso){
     .fromTo('.etiqueta', {rotation: -25}, {rotation: 0, duration: 1.2, stagger: .1, ease: 'elastic.out(1, .35)'}, '<');
 }
 
-/* cambiar de color o girar la prenda */
+/* cambiar de color: el color nuevo sube de abajo hacia arriba, como si la prenda se tiñera */
+let tiñendo = false;
+async function teñir(nuevoColor){
+  if (tiñendo || nuevoColor === color) return;
+  const p = PRENDAS[actual], destino = p.colores[nuevoColor].img;
+  if (!anima) { color = nuevoColor; cara = 'frente'; return pintar(); }
+  tiñendo = true;
+  const capa = foto.cloneNode();
+  capa.removeAttribute('data-img'); capa.alt = '';
+  capa.className = 'tinte'; capa.src = destino;
+  try { await capa.decode(); } catch (_) {}
+  foto.after(capa);
+  gsap.fromTo(capa, {'--tinte': -15}, {'--tinte': 115, duration: 1.1, ease: 'power2.inOut', onComplete: () => {
+    color = nuevoColor; elegido[actual] = nuevoColor; cara = 'frente'; pintar(); capa.remove(); tiñendo = false;
+  }});
+  gsap.fromTo('.etiqueta', {rotation: 6}, {rotation: 0, duration: 1.2, stagger: .08, ease: 'elastic.out(1, .35)'});
+  // la prenda del riel también queda del color elegido
+  contenedor.children[actual].querySelector('img').src = destino;
+}
+
+/* girar la prenda (frente / espalda) */
 function cambiarFoto(accion){
   if (!anima) { accion(); return pintar(); }
   gsap.timeline()
@@ -393,7 +417,7 @@ function cambiarFoto(accion){
 
 detalle.addEventListener('click', e => {
   const t = e.target.closest('button'); if (!t || t.disabled) return;
-  if (t.dataset.color) cambiarFoto(() => { color = +t.dataset.color; });
+  if (t.dataset.color) teñir(+t.dataset.color);
   else if (t.dataset.cara && t.dataset.cara !== cara) cambiarFoto(() => { cara = t.dataset.cara; });
   else if (t.dataset.talle) { talle = t.dataset.talle; pintar(); }
   else if (t.dataset.mover) mover(+t.dataset.mover);
