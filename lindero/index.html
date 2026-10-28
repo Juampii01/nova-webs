@@ -158,6 +158,8 @@ input[type=range]{width:100%;accent-color:var(--plano)}
   .logo span{display:none}
   .obra__velo{display:none}
   .obra__foto img{-webkit-mask-image:linear-gradient(#000 62%,transparent);mask-image:linear-gradient(#000 62%,transparent)}
+  .obra-vertical .obra__velo{display:block;background:linear-gradient(0deg,rgba(9,19,38,.92) 0%,rgba(9,19,38,.6) 32%,rgba(9,19,38,0) 55%),linear-gradient(180deg,rgba(9,19,38,.55) 0%,rgba(9,19,38,0) 14%)}
+  .obra-vertical .obra__foto img{-webkit-mask-image:linear-gradient(#000 70%,transparent 88%);mask-image:linear-gradient(#000 70%,transparent 88%);transform:translateY(-10%)}
   .obra__textos{bottom:96px}
   .etapa h1,.etapa h2{font-size:clamp(44px,12.5vw,64px);margin-bottom:14px}
   .etapa__semana{margin-bottom:10px}
@@ -433,7 +435,11 @@ const USD_M2 = 1290;
   const ctx = canvas.getContext('2d');
   const cuadros = new Array(TOTAL);
   let actual = 0;
-  const ruta = i => 'obra/f' + String(i).padStart(3, '0') + '.webp';
+  // celular en vertical: película vertical a pantalla completa; el resto, la horizontal
+  const VERTICAL = innerWidth / innerHeight < .8;
+  document.documentElement.classList.toggle('obra-vertical', VERTICAL);
+  if (VERTICAL) noche.querySelector('img').src = 'img/noche-v.jpg';
+  const ruta = i => (VERTICAL ? 'obra-v/f' : 'obra/f') + String(i).padStart(3, '0') + '.webp';
   const dibujar = () => {
     // el cuadro pedido o, si todavía no bajó, el más cercano que ya esté
     let k = actual, img = null;
@@ -455,13 +461,22 @@ const USD_M2 = 1290;
       ctx.fillStyle = a; ctx.fillRect(0, g.y, w, g.alto * .18);
       return;
     }
+    if (VERTICAL) {
+      // vertical: la película sube un 10% para que la casa no quede detrás del título; abajo, azul noche
+      ctx.fillStyle = '#0b1730'; ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, g.x, g.y - h * .1, g.ancho, g.alto);
+      const d = ctx.createLinearGradient(0, g.alto * .78 - h * .1, 0, g.alto - h * .1 + 1);
+      d.addColorStop(0, 'rgba(11,23,48,0)'); d.addColorStop(1, 'rgba(11,23,48,1)');
+      ctx.fillStyle = d; ctx.fillRect(0, g.alto * .78 - h * .1, w, g.alto * .22 + 2);
+      return;
+    }
     ctx.drawImage(img, g.x, g.y, g.ancho, g.alto);
   };
   // dónde va el cuadro: en pantallas anchas llena todo; en las angostas entra entero arriba del texto
   function geometria(nw, nh, w, h){
-    if (w / h >= 1.3) {
+    if (VERTICAL || w / h >= 1.3) {
       const e = Math.max(w / nw, h / nh);
-      return {ajustada: false, ancho: nw * e, alto: nh * e, x: (w - nw * e) / 2, y: (h - nh * e) * .6};
+      return {ajustada: false, ancho: nw * e, alto: nh * e, x: (w - nw * e) / 2, y: (h - nh * e) * (VERTICAL ? .5 : .6)};
     }
     // en el celular se recortan solo los árboles de los costados; la casa ocupa del 20% al 85% del cuadro
     const ancho = w * (w / h < .8 ? 1.32 : 1.08), alto = nh * ancho / nw;
@@ -471,7 +486,7 @@ const USD_M2 = 1290;
   // la foto de noche usa la misma geometría que el cuadro, para que el cambio no salte
   const ubicarNoche = () => {
     const img = noche.querySelector('img');
-    const g = geometria(16, 9, innerWidth, innerHeight);
+    const g = VERTICAL ? {ajustada: false} : geometria(16, 9, innerWidth, innerHeight);
     Object.assign(img.style, g.ajustada
       ? {position: 'absolute', left: g.x + 'px', top: g.y + 'px', width: g.ancho + 'px', height: g.alto + 'px', objectFit: 'cover', maxWidth: 'none'}
       : {position: '', left: '', top: '', width: '', height: '', objectFit: '', maxWidth: ''});
