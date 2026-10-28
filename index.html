@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nova Webs</title>
+<meta name="description" content="Muestras de webs a medida hechas por Nova Softwares. Abrilas y miralas en el celular.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Vidriera: fondo de hormigón, tinta casi negra verdosa, un verde de señal para las acciones.
+   Cada muestra es una fila ancha (texto a la izquierda, dispositivos a la derecha), no una grilla de tarjetas. */
+:root{
+  --hormigon:#dcddd7;
+  --papel:#eeefea;
+  --tinta:#0f1412;
+  --grafito:#565c58;
+  --linea:#bfc2bb;
+  --senal:#1c5a43;
+  --senal-claro:#d4e4dc;
+  --display:"Bricolage Grotesque", "Arial Narrow", Arial, sans-serif;
+  --texto:"Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --margen:max(16px, 4vw);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--hormigon);color:var(--tinta);font-family:var(--texto);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--senal);outline-offset:3px}
+
+.envoltura{padding-left:max(var(--margen), env(safe-area-inset-left,0px));padding-right:max(var(--margen), env(safe-area-inset-right,0px))}
+
+/* barra */
+.barra{display:flex;justify-content:space-between;align-items:center;padding-block:22px;border-bottom:1px solid var(--linea)}
+.marca{font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:-.02em;text-decoration:none;font-variation-settings:"wdth" 100}
+.marca span{color:var(--senal)}
+.barra a.escribir{font-size:15px;font-weight:500;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px}
+
+/* apertura */
+.apertura{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,4fr);gap:clamp(24px,5vw,80px);align-items:end;padding-block:clamp(64px,12vh,140px) clamp(48px,8vh,96px)}
+.apertura h1{font-family:var(--display);font-weight:700;font-size:clamp(46px,8.2vw,132px);line-height:.9;letter-spacing:-.035em;font-variation-settings:"wdth" 82, "opsz" 96;text-wrap:balance}
+.apertura p{color:var(--grafito);max-width:38ch}
+.apertura p + p{margin-top:14px}
+.cuenta{font-variant-numeric:tabular-nums;color:var(--tinta);font-weight:600}
+
+/* muestras */
+.muestras{list-style:none;border-top:1px solid var(--tinta)}
+.muestra{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:clamp(24px,5vw,80px);padding-block:clamp(40px,7vh,80px);border-bottom:1px solid var(--linea);align-items:center}
+.muestra__texto{display:flex;flex-direction:column;gap:18px;min-width:0}
+.muestra__rubro{font-size:15px;color:var(--grafito)}
+.muestra h2{font-family:var(--display);font-weight:700;font-size:clamp(44px,6vw,96px);line-height:.92;letter-spacing:-.03em;font-variation-settings:"wdth" 78, "opsz" 96}
+.muestra__desc{max-width:42ch}
+.muestra__datos{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;font-size:15px;color:var(--grafito)}
+.muestra__datos dt{color:var(--tinta);font-weight:500}
+.acciones{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.boton{display:inline-flex;align-items:center;gap:8px;padding:13px 20px;border:1px solid var(--tinta);border-radius:2px;font-size:15px;font-weight:500;text-decoration:none;transition:background .2s,color .2s}
+.boton:hover{background:var(--tinta);color:var(--hormigon)}
+.boton--senal{background:var(--senal);border-color:var(--senal);color:#fff}
+.boton--senal:hover{background:var(--tinta);border-color:var(--tinta)}
+
+/* composición de dispositivos: pantalla grande con el celular encima */
+.dispositivos{position:relative;padding-bottom:8%;padding-right:6%}
+.pantalla{background:var(--tinta);border-radius:8px;padding:10px 10px 0;box-shadow:0 30px 60px -30px rgba(15,20,18,.45)}
+.pantalla__barra{display:flex;gap:6px;padding:0 4px 9px}
+.pantalla__barra i{width:9px;height:9px;border-radius:50%;background:#3a403d}
+.pantalla img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;border-radius:2px 2px 0 0}
+.celu{position:absolute;right:0;bottom:0;width:23%;background:var(--tinta);border-radius:22px;padding:7px;box-shadow:0 24px 40px -18px rgba(15,20,18,.6)}
+.celu img{width:100%;aspect-ratio:390/844;object-fit:cover;object-position:top;border-radius:16px}
+.dispositivos button{position:absolute;inset:0;width:100%}
+.dispositivos button span{position:absolute;left:12px;bottom:calc(8% + 14px);background:var(--papel);padding:7px 12px;font-size:14px;border-radius:2px;opacity:0;transition:opacity .2s}
+.dispositivos button:hover span,.dispositivos button:focus-visible span{opacity:1}
+
+/* proceso */
+.proceso{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,7fr);gap:clamp(24px,5vw,80px);padding-block:clamp(80px,14vh,160px)}
+.proceso h2,.cierre h2{font-family:var(--display);font-weight:700;font-size:clamp(36px,4.4vw,68px);line-height:.95;letter-spacing:-.03em;font-variation-settings:"wdth" 82}
+.pasos{list-style:none;counter-reset:paso;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:36px 40px}
+.pasos li{counter-increment:paso;border-top:1px solid var(--tinta);padding-top:16px}
+.pasos li::before{content:counter(paso);font-family:var(--display);font-weight:700;font-size:15px;color:var(--senal);display:block;margin-bottom:10px;font-variant-numeric:tabular-nums}
+.pasos h3{font-size:19px;font-weight:600;margin-bottom:6px}
+.pasos p{color:var(--grafito);font-size:16px}
+
+/* cierre */
+.cierre{background:var(--tinta);color:var(--hormigon);padding-block:clamp(80px,14vh,150px)}
+.cierre .envoltura{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap}
+.cierre h2{max-width:14ch}
+.cierre p{color:#9aa39e;margin-top:16px;max-width:40ch}
+.cierre .boton{border-color:var(--hormigon)}
+.cierre .boton--senal{border-color:var(--senal)}
+.cierre .boton--senal:hover{background:var(--hormigon);color:var(--tinta);border-color:var(--hormigon)}
+.numero{user-select:all;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pie{background:var(--tinta);color:#7f8984;font-size:14px;padding-block:0 28px}
+.pie .envoltura{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid #2a312e;padding-top:22px}
+
+/* visor */
+.visor{border:0;padding:0;width:100vw;height:100dvh;max-width:none;max-height:none;background:#121614;color:#e7e9e4}
+.visor::backdrop{background:rgba(10,13,12,.7)}
+.visor[open]{display:flex;flex-direction:column}
+.visor__barra{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px max(16px,2vw);border-bottom:1px solid #2a312e;flex-wrap:wrap}
+.visor__titulo{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.02em}
+.visor__modos{display:flex;border:1px solid #3a423e;border-radius:2px}
+.visor__modos button{padding:8px 14px;font-size:14px;color:#aab3ae}
+.visor__modos button[aria-pressed="true"]{background:#e7e9e4;color:#121614}
+.visor__acciones{display:flex;gap:16px;font-size:14px;align-items:center}
+.visor__acciones a{color:#e7e9e4}
+.visor__cerrar{padding:8px 12px;border:1px solid #3a423e;border-radius:2px}
+.visor__escena{flex:1;min-height:0;display:grid;place-items:center;overflow:hidden;padding:16px}
+.visor__marco{background:#000;transition:width .35s cubic-bezier(.2,.7,.2,1),height .35s,border-radius .35s}
+.visor__marco iframe{display:block;border:0;width:100%;height:100%;background:#fff}
+.visor[data-modo="compu"] .visor__marco{width:100%;height:100%;border-radius:4px;overflow:hidden}
+.visor[data-modo="celu"] .visor__marco{width:414px;height:868px;flex:none;padding:12px;border-radius:52px;box-shadow:0 0 0 2px #2a312e;transform-origin:center;transform:scale(var(--escala,1))}
+.visor[data-modo="celu"] .visor__marco iframe{border-radius:40px}
+
+@media (max-width:900px){
+  .apertura,.muestra,.proceso{grid-template-columns:1fr}
+  .pasos{grid-template-columns:1fr}
+  .visor__modos{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="envoltura barra">
+  <a class="marca" href="./">Nova<span>.</span>Webs</a>
+  <a class="escribir" data-whatsapp="Hola, vi las muestras de Nova Webs y quiero una web para mi negocio." href="#contacto">Escribinos por WhatsApp</a>
+</header>
+
+<main>
+  <section class="envoltura apertura" aria-labelledby="titulo">
+    <h1 id="titulo">Webs hechas a medida para tu negocio</h1>
+    <div>
+      <p>Cada muestra funciona de verdad: abrila, bajá hasta el final y mirala en el celular, como la vería tu cliente.</p>
+      <p><span class="cuenta" data-cuenta></span> en la vidriera por ahora.</p>
+    </div>
+  </section>
+
+  <ol class="envoltura muestras" id="muestras" aria-label="Muestras"></ol>
+
+  <section class="envoltura proceso" aria-labelledby="proceso-titulo">
+    <h2 id="proceso-titulo">Cómo trabajamos</h2>
+    <ol class="pasos">
+      <li><h3>Charla</h3><p>Nos contás qué vendés, a quién y qué tiene que hacer la gente cuando entra a tu web.</p></li>
+      <li><h3>Dirección de diseño</h3><p>Te mostramos cómo se va a ver antes de construir: colores, tipografía y la estructura de tu rubro.</p></li>
+      <li><h3>Construcción</h3><p>La web completa con tus textos y tus fotos, conectada a tu WhatsApp para que cada visita termine en un mensaje.</p></li>
+      <li><h3>Publicación</h3><p>En tu dominio, rápida en el celular y lista para aparecer en Google.</p></li>
+    </ol>
+  </section>
+</main>
+
+<section class="cierre" id="contacto" aria-labelledby="cierre-titulo">
+  <div class="envoltura">
+    <div>
+      <h2 id="cierre-titulo">¿Querés una así para tu negocio?</h2>
+      <p>Escribinos y contanos qué hacés. También podés agendar el número: <span class="numero" data-numero></span></p>
+    </div>
+    <a class="boton boton--senal" data-whatsapp="Hola, vi las muestras de Nova Webs y quiero una web para mi negocio." href="#contacto">Escribinos por WhatsApp</a>
+  </div>
+</section>
+<footer class="pie">
+  <div class="envoltura"><span>Nova Webs, de Nova Softwares</span><span>Todas las marcas de las muestras son inventadas.</span></div>
+</footer>
+
+<dialog class="visor" id="visor" aria-labelledby="visor-titulo" data-modo="celu">
+  <div class="visor__barra">
+    <span class="visor__titulo" id="visor-titulo"></span>
+    <div class="visor__modos" role="group" aria-label="Ver como">
+      <button type="button" data-modo="celu" aria-pressed="true">Celular</button>
+      <button type="button" data-modo="compu" aria-pressed="false">Computadora</button>
+    </div>
+    <div class="visor__acciones">
+      <a id="visor-abrir" href="#" target="_blank" rel="noopener">Abrir en otra pestaña</a>
+      <button type="button" class="visor__cerrar" id="visor-cerrar">Cerrar</button>
+    </div>
+  </div>
+  <div class="visor__escena"><div class="visor__marco"><iframe id="visor-web" title="Vista de la muestra"></iframe></div></div>
+</dialog>
+
+<!-- Catálogo: lo genera scripts/catalogo.py a partir de las carpetas con ficha.json. No editar a mano. -->
+<script id="catalogo" type="application/json">[
+  {
+    "nombre": "Vauren",
+    "rubro": "Relojería de lujo",
+    "estructura": "Producto premium",
+    "descripcion": "La hora real del visitante gira como un reloj en la portada. Colección con scroll horizontal y una cámara que recorre el reloj pieza por pieza.",
+    "destacado": "Hora en vivo, zoom guiado por scroll, reserva de visitas",
+    "carpeta": "vauren"
+  }
+]</script>
+
+<script>
+// Número de WhatsApp de Nova Webs: solo dígitos, con código de país (Argentina: 549 + área sin 0 + número sin 15).
+const WHATSAPP = '5490000000000';
+
+(function(){
+  const webs = JSON.parse(document.getElementById('catalogo').textContent || '[]');
+  const lista = document.getElementById('muestras');
+  const wa = texto => `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`;
+  const legible = n => n.replace(/^549(\d{2})(\d{4})(\d{4})$/, '+54 9 $1 $2-$3');
+
+  document.querySelector('[data-cuenta]').textContent = webs.length === 1 ? '1 muestra' : `${webs.length} muestras`;
+  document.querySelector('[data-numero]').textContent = legible(WHATSAPP);
+  document.querySelectorAll('[data-whatsapp]').forEach(a => { a.href = wa(a.dataset.whatsapp); a.target = '_blank'; a.rel = 'noopener'; });
+
+  webs.forEach(w => {
+    const li = document.createElement('li');
+    li.className = 'muestra';
+    li.innerHTML = `
+      <div class="muestra__texto">
+        <p class="muestra__rubro"></p>
+        <h2></h2>
+        <p class="muestra__desc"></p>
+        <dl class="muestra__datos"><dt>Estructura</dt><dd data-c="estructura"></dd><dt>Lo distinto</dt><dd data-c="destacado"></dd></dl>
+        <div class="acciones">
+          <a class="boton" target="_blank" rel="noopener" data-c="abrir">Ver web</a>
+          <button class="boton" type="button" data-c="celu">Ver en celular</button>
+          <a class="boton boton--senal" target="_blank" rel="noopener" data-c="pedir">Quiero una así</a>
+        </div>
+      </div>
+      <div class="dispositivos">
+        <div class="pantalla"><div class="pantalla__barra" aria-hidden="true"><i></i><i></i><i></i></div><img loading="lazy" alt=""></div>
+        <div class="celu"><img loading="lazy" alt=""></div>
+        <button type="button" data-c="ver"><span>Abrir la muestra</span></button>
+      </div>`;
+    const $ = s => li.querySelector(s);
+    $('.muestra__rubro').textContent = w.rubro;
+    $('h2').textContent = w.nombre;
+    $('.muestra__desc').textContent = w.descripcion;
+    $('[data-c="estructura"]').textContent = w.estructura;
+    $('[data-c="destacado"]').textContent = w.destacado;
+    $('[data-c="abrir"]').href = `${w.carpeta}/`;
+    $('[data-c="pedir"]').href = wa(`Hola, vi la muestra ${w.nombre} en Nova Webs y quiero una web así para mi negocio.`);
+    const [imgPantalla, imgCelu] = li.querySelectorAll('img');
+    imgPantalla.src = `${w.carpeta}/portada.jpg`; imgPantalla.alt = `Portada de ${w.nombre} en computadora`;
+    imgCelu.src = `${w.carpeta}/celular.jpg`; imgCelu.alt = `Portada de ${w.nombre} en celular`;
+    $('[data-c="celu"]').onclick = () => abrirVisor(w, 'celu');
+    $('[data-c="ver"]').onclick = () => abrirVisor(w, innerWidth > 900 ? 'compu' : 'celu');
+    $('[data-c="ver"]').setAttribute('aria-label', `Abrir ${w.nombre}`);
+    lista.append(li);
+  });
+
+  /* visor: la muestra dentro de un celular o a pantalla completa, sin salir de la vidriera */
+  const visor = document.getElementById('visor');
+  const iframe = document.getElementById('visor-web');
+  const marco = visor.querySelector('.visor__marco');
+  const escalar = () => {
+    const escena = visor.querySelector('.visor__escena').getBoundingClientRect();
+    const e = Math.min(1, (escena.height - 32) / 868, (escena.width - 32) / 414);
+    marco.style.setProperty('--escala', e.toFixed(3));
+  };
+  const modo = m => {
+    visor.dataset.modo = m;
+    visor.querySelectorAll('.visor__modos button').forEach(b => b.setAttribute('aria-pressed', b.dataset.modo === m));
+    escalar();
+  };
+  function abrirVisor(w, m){
+    document.getElementById('visor-titulo').textContent = w.nombre;
+    document.getElementById('visor-abrir').href = `${w.carpeta}/`;
+    iframe.src = `${w.carpeta}/index.html`;
+    visor.showModal(); modo(m);
+  }
+  visor.querySelectorAll('.visor__modos button').forEach(b => b.onclick = () => modo(b.dataset.modo));
+  document.getElementById('visor-cerrar').onclick = () => visor.close();
+  visor.addEventListener('close', () => { iframe.src = 'about:blank'; });
+  addEventListener('resize', () => visor.open && escalar());
+})();
+</script>
+</body>
+</html>

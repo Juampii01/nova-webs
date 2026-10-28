@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vauren Relojería</title>
+<meta name="description" content="Relojes mecánicos hechos a mano en series de doscientas piezas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Schibsted+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --negro:#000;
+  --carbon:#0d0c0b;
+  --grafito:#1b1a19;
+  --marfil:#ece7de;
+  --humo:#8f8a83;
+  --ambar:#d39a5c;
+  --piedra:#d3cec5;
+  --tinta:#141210;
+  --display:"Bodoni Moda", "Didot", "Bodoni 72", serif;
+  --texto:"Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --gutter:clamp(16px, 4vw, 64px);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--negro);color-scheme:dark}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{background:var(--negro);color:var(--marfil);font-family:var(--texto);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--ambar);outline-offset:4px}
+::selection{background:var(--ambar);color:var(--negro)}
+
+/* ---------- barra ---------- */
+.barra{position:fixed;inset:0 0 auto 0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:22px var(--gutter);mix-blend-mode:difference;color:#fff}
+.marca{font-family:var(--display);font-size:22px;letter-spacing:.34em;font-weight:500;font-optical-sizing:auto}
+.barra nav{display:flex;gap:clamp(18px,2.6vw,40px);font-size:14px}
+.barra nav a{position:relative;padding:4px 0}
+.barra nav a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+.barra nav a:hover::after,.barra nav a:focus-visible::after{transform:scaleX(1)}
+
+/* ---------- portada ---------- */
+.portada{position:relative;height:100svh;min-height:620px;overflow:hidden;background:var(--negro)}
+.portada__foto{position:absolute;inset:0}
+.portada__foto img{width:100%;height:100%;object-fit:cover;object-position:72% 50%}
+.portada__hora{position:absolute;left:var(--gutter);top:50%;transform:translateY(-58%);z-index:2}
+.reloj{display:flex;align-items:flex-start;font-family:var(--display);font-weight:400;font-size:clamp(96px,15.5vw,300px);line-height:1;letter-spacing:-.02em;font-variant-numeric:lining-nums;font-optical-sizing:auto;font-variation-settings:"opsz" 96}
+.rueda{display:inline-block;height:1em;overflow:hidden;position:relative}
+.rueda__tira{display:flex;flex-direction:column;will-change:transform}
+.rueda__tira span{height:1em;display:block;text-align:center}
+.reloj .dos{width:.32em;text-align:center;transform:translateY(-.04em)}
+.reloj .seg{font-size:.2em;margin-left:.35em;margin-top:.55em;color:var(--ambar);display:flex}
+.portada__pie{position:absolute;left:var(--gutter);right:var(--gutter);bottom:clamp(24px,5vh,48px);display:flex;justify-content:space-between;align-items:flex-end;gap:24px;z-index:2}
+.portada__pie p{max-width:32ch;font-size:15px;color:var(--humo)}
+.portada__pie p strong{color:var(--marfil);font-weight:500}
+.portada__modelo{text-align:right;font-size:14px;color:var(--humo)}
+.portada__modelo b{display:block;font-family:var(--display);font-weight:400;font-style:italic;font-size:26px;color:var(--marfil)}
+.velo{position:fixed;inset:0;background:var(--negro);z-index:80;pointer-events:none}
+
+/* ---------- colección ---------- */
+.coleccion{position:relative;background:var(--negro);overflow:hidden}
+.coleccion__pista{display:flex;align-items:stretch;gap:clamp(20px,2.4vw,40px);padding:clamp(96px,14vh,140px) var(--gutter) clamp(72px,10vh,110px);width:max-content}
+.coleccion__intro{width:min(30vw,440px);display:flex;flex-direction:column;justify-content:space-between;padding-right:3vw}
+.coleccion__intro h2{font-family:var(--display);font-weight:400;font-size:clamp(52px,6.4vw,112px);line-height:.95;letter-spacing:-.02em}
+.coleccion__intro p{color:var(--humo);max-width:34ch;font-size:16px}
+.pieza{width:clamp(300px,31vw,520px);display:flex;flex-direction:column;gap:18px}
+.pieza__foto{aspect-ratio:1/1;overflow:hidden;background:var(--grafito);position:relative}
+.pieza__foto img{width:100%;height:100%;object-fit:cover}
+.pieza__foto--ancha img{object-position:69% 50%;transform:scale(1.02)}
+.pieza__datos{display:grid;grid-template-columns:1fr auto;gap:2px 24px;align-items:baseline}
+.pieza__nombre{font-family:var(--display);font-weight:400;font-size:clamp(30px,2.6vw,44px);line-height:1.05}
+.pieza__precio{font-size:15px;font-variant-numeric:tabular-nums}
+.pieza__desc{grid-column:1/-1;color:var(--humo);font-size:15px}
+.pieza--pendiente .pieza__foto{display:grid;place-items:center;background:radial-gradient(60% 55% at 50% 48%, #2a2622 0%, #121110 70%)}
+.pieza--pendiente .pieza__foto span{font-family:var(--display);font-style:italic;font-size:clamp(40px,4vw,72px);color:#3b3732}
+.coleccion__avance{position:absolute;left:var(--gutter);right:var(--gutter);bottom:36px;height:1px;background:#262422}
+.coleccion__avance i{position:absolute;inset:0;background:var(--marfil);transform:scaleX(0);transform-origin:left}
+
+/* ---------- anatomía ---------- */
+.anatomia{position:relative;height:500vh;background:var(--negro)}
+.anatomia__escena{position:sticky;top:0;height:100vh;overflow:hidden}
+.anatomia__lienzo{position:absolute;left:50%;top:50%;width:max(100vw,177.78vh);aspect-ratio:16/9;translate:-50% -50%}
+.anatomia__zoom{position:absolute;inset:0;will-change:transform}
+.anatomia__zoom img{width:100%;height:100%;object-fit:cover}
+.anatomia__macro{position:absolute;inset:0;opacity:0;pointer-events:none}
+.anatomia__macro img{width:100%;height:100%;object-fit:cover;object-position:60% 50%}
+.anatomia__sombra{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.9) 0%,rgba(0,0,0,.55) 30%,rgba(0,0,0,0) 55%);pointer-events:none}
+.anatomia__textos{position:absolute;left:var(--gutter);bottom:clamp(48px,12vh,120px);width:min(440px,80vw);height:16em}
+.paso{position:absolute;left:0;bottom:0;opacity:0}
+.paso:first-child{opacity:1}
+.paso h3{font-family:var(--display);font-weight:400;font-size:clamp(40px,4.4vw,76px);line-height:1;margin-bottom:18px;letter-spacing:-.01em}
+.paso p{color:#bdb7ae;max-width:36ch}
+.anatomia__cuenta{position:absolute;right:var(--gutter);bottom:clamp(48px,12vh,120px);font-family:var(--display);font-size:20px;color:var(--humo);font-variant-numeric:lining-nums}
+.anatomia__cuenta b{color:var(--marfil);font-weight:400}
+
+/* ---------- calibre ---------- */
+.calibre{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(32px,6vw,110px);padding:clamp(110px,18vh,200px) var(--gutter);background:var(--carbon);align-items:center}
+.calibre blockquote{font-family:var(--display);font-weight:400;font-size:clamp(34px,3.6vw,62px);line-height:1.08;letter-spacing:-.01em;max-width:16ch}
+.calibre cite{display:block;margin-top:24px;font-family:var(--texto);font-style:normal;font-size:15px;color:var(--humo)}
+.ficha{margin-top:clamp(40px,7vh,72px);display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid #2a2826}
+.ficha div{padding:18px 16px 18px 0;border-bottom:1px solid #2a2826}
+.ficha dt{font-size:13px;color:var(--humo)}
+.ficha dd{font-family:var(--display);font-size:clamp(24px,2vw,32px);font-variant-numeric:lining-nums;margin-top:2px}
+.calibre__foto{aspect-ratio:4/5;overflow:hidden;background:var(--negro)}
+.calibre__foto img{width:100%;height:100%;object-fit:cover;object-position:68% 46%;transform:scale(1.5);transform-origin:68% 46%}
+.calibre__foto img.propia{object-position:50% 50%;transform:none}
+
+/* ---------- taller ---------- */
+.taller{background:var(--piedra);color:var(--tinta);color-scheme:light;padding:clamp(110px,16vh,180px) var(--gutter);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(40px,7vw,120px)}
+.taller h2{font-family:var(--display);font-weight:400;font-size:clamp(52px,6vw,104px);line-height:.95;letter-spacing:-.02em;max-width:9ch}
+.taller__lead{margin-top:28px;max-width:38ch;color:#4a4640}
+.taller form{display:flex;flex-direction:column;gap:30px;align-self:end}
+.grupo legend,.campo label{font-size:14px;color:#57524b;margin-bottom:12px;display:block}
+.grupo{border:0}
+.opciones{display:flex;flex-wrap:wrap;gap:8px}
+.opcion{position:relative}
+.opcion input{position:absolute;opacity:0;pointer-events:none}
+.opcion span{display:block;padding:11px 16px;border:1px solid #a9a39a;font-size:15px;line-height:1.2;transition:background .2s,color .2s,border-color .2s;cursor:pointer;font-variant-numeric:tabular-nums}
+.opcion span small{display:block;font-size:12px;color:#6b665e;margin-top:2px}
+.opcion input:checked + span{background:var(--tinta);border-color:var(--tinta);color:var(--piedra)}
+.opcion input:checked + span small{color:#b9b3aa}
+.opcion input:focus-visible + span{outline:2px solid var(--tinta);outline-offset:3px}
+.campos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.campo input{width:100%;background:transparent;border:0;border-bottom:1px solid #8d877e;padding:10px 0;font:inherit;color:var(--tinta);border-radius:0}
+.campo input:focus{outline:none;border-bottom-color:var(--tinta)}
+.enviar{align-self:flex-start;background:var(--tinta);color:var(--piedra);padding:17px 30px;font-size:15px;font-weight:500;transition:opacity .2s}
+.enviar:disabled{opacity:.35;cursor:not-allowed}
+.aviso{font-size:14px;color:#57524b;min-height:1.4em}
+.confirmado{align-self:end;border-top:1px solid var(--tinta);padding-top:28px}
+.confirmado h3{font-family:var(--display);font-weight:400;font-size:clamp(34px,3vw,52px);line-height:1.05;margin-bottom:14px}
+.confirmado p{color:#4a4640;max-width:40ch}
+.confirmado button{margin-top:22px;text-decoration:underline;text-underline-offset:4px;font-size:15px}
+
+/* ---------- pie ---------- */
+.pie{background:var(--negro);padding:clamp(80px,12vh,120px) var(--gutter) 0;overflow:hidden}
+.pie__fila{display:flex;justify-content:space-between;gap:32px;flex-wrap:wrap;font-size:15px;color:var(--humo)}
+.pie__fila nav{display:flex;gap:28px;flex-wrap:wrap}
+.pie__fila a:hover{color:var(--marfil)}
+.pie__marca{font-family:var(--display);font-weight:400;font-size:31.5vw;line-height:.86;letter-spacing:-.035em;margin:clamp(40px,8vh,90px) 0 0 -.04em;padding-bottom:1.2vw;white-space:nowrap;color:var(--marfil)}
+
+/* ---------- móvil ---------- */
+@media (max-width:900px){
+  .barra nav{display:none}
+  .portada__foto{top:30%}
+  .portada__foto img{object-position:74% 50%}
+  .portada__foto::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#000 0%,rgba(0,0,0,0) 22%,rgba(0,0,0,0) 62%,rgba(0,0,0,.85) 88%)}
+  .portada__hora{top:96px;transform:none}
+  .reloj{font-size:25vw}
+  .portada__pie{flex-direction:column;align-items:flex-start}
+  .portada__modelo{text-align:left}
+  .coleccion__pista{flex-direction:column;width:auto}
+  .coleccion__intro{width:auto;padding:0;gap:20px}
+  .pieza{width:100%}
+  .coleccion__avance{display:none}
+  .anatomia__sombra{background:linear-gradient(0deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.5) 40%,rgba(0,0,0,0) 65%)}
+  .anatomia__cuenta{top:84px;bottom:auto}
+  .calibre,.taller{grid-template-columns:1fr}
+  .ficha{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .campos{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  .anatomia{height:auto}
+  .anatomia__escena{position:relative;height:auto;overflow:visible}
+  .anatomia__lienzo{position:relative;left:auto;top:auto;width:100%;translate:none}
+  .anatomia__sombra,.anatomia__macro{display:none}
+  .anatomia__textos{position:relative;left:auto;bottom:auto;width:auto;height:auto;padding:48px var(--gutter);display:grid;gap:40px}
+  .paso{position:relative;opacity:1}
+  .anatomia__cuenta{display:none}
+}
+</style>
+</head>
+<body>
+<div class="velo" aria-hidden="true"></div>
+
+<header class="barra">
+  <a class="marca" href="#inicio" aria-label="Vauren, inicio">VAUREN</a>
+  <nav aria-label="Secciones">
+    <a href="#coleccion">Colección</a>
+    <a href="#anatomia">El Ámbar 39</a>
+    <a href="#calibre">Calibre</a>
+    <a href="#taller">Visitar el taller</a>
+  </nav>
+</header>
+
+<main>
+  <section class="portada" id="inicio" aria-label="Portada">
+    <div class="portada__foto"><img src="img/ambar.jpg" alt="Reloj Vauren Ámbar 39 de acero con esfera marrón ahumada, sobre fondo negro con un halo cálido" fetchpriority="high"></div>
+    <div class="portada__hora">
+      <p class="reloj" aria-live="off" aria-label="Hora local">
+        <span class="rueda" data-d="h1"></span><span class="rueda" data-d="h2"></span><span class="dos">:</span><span class="rueda" data-d="m1"></span><span class="rueda" data-d="m2"></span>
+        <span class="seg"><span class="rueda" data-d="s1"></span><span class="rueda" data-d="s2"></span></span>
+      </p>
+    </div>
+    <div class="portada__pie">
+      <p><strong>Esta es tu hora, ahora mismo.</strong> Vauren arma relojes mecánicos a mano, en series de doscientas piezas por año.</p>
+      <a class="portada__modelo" href="#anatomia"><b>Ámbar 39</b>Acero, esfera ahumada, cuerda manual</a>
+    </div>
+  </section>
+
+  <section class="coleccion" id="coleccion" aria-labelledby="coleccion-titulo">
+    <div class="coleccion__pista">
+      <div class="coleccion__intro">
+        <h2 id="coleccion-titulo">La colección</h2>
+        <p>Seis referencias. Cada serie se cierra en doscientas piezas, y el número de la tuya va grabado en el fondo de la caja.</p>
+      </div>
+      <article class="pieza">
+        <div class="pieza__foto pieza__foto--ancha"><img src="img/ambar.jpg" alt="Ámbar 39" loading="lazy"></div>
+        <div class="pieza__datos"><h3 class="pieza__nombre">Ámbar 39</h3><span class="pieza__precio">USD 6.400</span><p class="pieza__desc">Acero pulido, esfera ahumada rayos de sol</p></div>
+      </article>
+      <article class="pieza">
+        <div class="pieza__foto"><img src="img/fresno.jpg" alt="Fresno 41, reloj de acero octogonal con esfera verde y brazalete integrado" loading="lazy"></div>
+        <div class="pieza__datos"><h3 class="pieza__nombre">Fresno 41</h3><span class="pieza__precio">USD 8.900</span><p class="pieza__desc">Acero cepillado, brazalete integrado</p></div>
+      </article>
+      <article class="pieza">
+        <div class="pieza__foto"><img src="img/marfil.jpg" alt="Marfil 38, reloj de oro rosa con esfera de esmalte blanco y agujas azules" loading="lazy"></div>
+        <div class="pieza__datos"><h3 class="pieza__nombre">Marfil 38</h3><span class="pieza__precio">USD 14.200</span><p class="pieza__desc">Oro rosa, esfera de esmalte, agujas pavonadas</p></div>
+      </article>
+      <article class="pieza" data-foto="img/calado.jpg">
+        <div class="pieza__foto"><img alt="Calado 42, reloj de cerámica negra con esfera calada" loading="lazy"></div>
+        <div class="pieza__datos"><h3 class="pieza__nombre">Calado 42</h3><span class="pieza__precio">USD 11.500</span><p class="pieza__desc">Cerámica negra, mecanismo a la vista</p></div>
+      </article>
+      <article class="pieza" data-foto="img/glaciar.jpg">
+        <div class="pieza__foto"><img alt="Glaciar 40, cronógrafo de titanio con esfera celeste" loading="lazy"></div>
+        <div class="pieza__datos"><h3 class="pieza__nombre">Glaciar 40</h3><span class="pieza__precio">USD 9.700</span><p class="pieza__desc">Titanio, cronógrafo de dos contadores</p></div>
+      </article>
+      <article class="pieza" data-foto="img/onix.jpg">
+        <div class="pieza__foto"><img alt="Ónix, reloj rectangular de oro amarillo con esfera de ónix" loading="lazy"></div>
+        <div class="pieza__datos"><h3 class="pieza__nombre">Ónix</h3><span class="pieza__precio">USD 12.800</span><p class="pieza__desc">Oro amarillo, esfera de piedra ónix</p></div>
+      </article>
+    </div>
+    <div class="coleccion__avance" aria-hidden="true"><i></i></div>
+  </section>
+
+  <section class="anatomia" id="anatomia" aria-label="El Ámbar 39 en detalle">
+    <div class="anatomia__escena">
+      <div class="anatomia__lienzo">
+        <div class="anatomia__zoom"><img src="img/ambar.jpg" alt="" loading="lazy"></div>
+      </div>
+      <div class="anatomia__macro"><img src="img/esfera.jpg" alt="" loading="lazy"></div>
+      <div class="anatomia__sombra"></div>
+      <div class="anatomia__textos">
+        <div class="paso"><h3>Ámbar 39</h3><p>El reloj con el que empezó Vauren. Bajá para verlo de cerca, pieza por pieza.</p></div>
+        <div class="paso"><h3>La esfera</h3><p>Latón con acabado rayos de sol y un baño ahumado a mano. Según de dónde venga la luz, pasa de cobre a casi negro.</p></div>
+        <div class="paso"><h3>La caja</h3><p>Acero de 39 mm y 9,8 mm de alto, pulido en catorce pasos. Cristal de zafiro abombado con antirreflejo en la cara interna.</p></div>
+        <div class="paso"><h3>La corona</h3><p>Estriada para que el dedo no resbale. Doce vueltas cargan setenta y dos horas de marcha.</p></div>
+        <div class="paso"><h3>La correa</h3><p>Aligátor negro cosido a mano, con hebilla de acero. Se cambia sin herramientas.</p></div>
+      </div>
+      <p class="anatomia__cuenta" aria-hidden="true"><b data-paso>1</b> de 5</p>
+    </div>
+  </section>
+
+  <section class="calibre" id="calibre" aria-labelledby="calibre-titulo">
+    <div>
+      <blockquote id="calibre-titulo">Cada calibre lo arma una sola persona, de la primera rueda a la última.<cite>Taller Vauren, banco de montaje</cite></blockquote>
+      <dl class="ficha">
+        <div><dt>Calibre</dt><dd>V-21</dd></div>
+        <div><dt>Cuerda</dt><dd>Manual</dd></div>
+        <div><dt>Reserva de marcha</dt><dd>72 h</dd></div>
+        <div><dt>Frecuencia</dt><dd>21.600 a/h</dd></div>
+        <div><dt>Rubíes</dt><dd>21</dd></div>
+        <div><dt>Componentes</dt><dd>164</dd></div>
+      </dl>
+    </div>
+    <div class="calibre__foto"><img data-foto="img/calibre.jpg" src="img/ambar.jpg" alt="Detalle de la esfera del Ámbar 39" loading="lazy"></div>
+  </section>
+
+  <section class="taller" id="taller" aria-labelledby="taller-titulo">
+    <div>
+      <h2 id="taller-titulo">Probátelo en el taller</h2>
+      <p class="taller__lead">Recibimos de a una persona por vez, con café y una hora sin apuro. Elegí el día y el horario; te mandamos la dirección por correo.</p>
+    </div>
+    <form id="reserva" novalidate>
+      <fieldset class="grupo"><legend>Día</legend><div class="opciones" id="dias"></div></fieldset>
+      <fieldset class="grupo"><legend>Horario</legend>
+        <div class="opciones">
+          <label class="opcion"><input type="radio" name="hora" value="10:00"><span>10:00</span></label>
+          <label class="opcion"><input type="radio" name="hora" value="11:30"><span>11:30</span></label>
+          <label class="opcion"><input type="radio" name="hora" value="15:00"><span>15:00</span></label>
+          <label class="opcion"><input type="radio" name="hora" value="17:30"><span>17:30</span></label>
+        </div>
+      </fieldset>
+      <div class="campos">
+        <div class="campo"><label for="nombre">Nombre</label><input id="nombre" name="nombre" autocomplete="name"></div>
+        <div class="campo"><label for="correo">Correo</label><input id="correo" name="correo" type="email" autocomplete="email"></div>
+      </div>
+      <button class="enviar" type="submit" disabled>Reservar visita</button>
+      <p class="aviso" id="aviso" role="status"></p>
+    </form>
+  </section>
+</main>
+
+<footer class="pie">
+  <div class="pie__fila">
+    <p>Taller en Buenos Aires. Visitas solo con reserva.</p>
+    <nav aria-label="Pie"><a href="#coleccion">Colección</a><a href="#calibre">Calibre</a><a href="#taller">Visitar el taller</a><a href="#taller">Servicio técnico</a></nav>
+    <p>© 2026 Vauren</p>
+  </div>
+  <p class="pie__marca" aria-hidden="true">Vauren</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+(function(){
+  const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hayGsap = !!window.gsap;
+  const velo = document.querySelector('.velo');
+
+  /* ---------- fotos que todavía no llegaron ---------- */
+  document.querySelectorAll('.pieza[data-foto]').forEach(p => {
+    const img = p.querySelector('img');
+    const nombre = p.querySelector('.pieza__nombre').textContent;
+    img.onerror = () => { p.classList.add('pieza--pendiente'); img.remove(); const s=document.createElement('span'); s.textContent=nombre; p.querySelector('.pieza__foto').append(s); };
+    img.src = p.dataset.foto;
+  });
+  const cal = document.querySelector('.calibre__foto img');
+  const prueba = new Image();
+  prueba.onload = () => { cal.src = cal.dataset.foto; cal.classList.add('propia'); cal.alt = 'Calibre V-21 visto por el fondo de la caja'; };
+  prueba.src = cal.dataset.foto;
+
+  /* ---------- reloj de la portada ---------- */
+  const ruedas = {};
+  document.querySelectorAll('.rueda').forEach(r => {
+    const tira = document.createElement('span'); tira.className = 'rueda__tira';
+    for (let i = 0; i < 10; i++) { const s = document.createElement('span'); s.textContent = i; tira.append(s); }
+    r.append(tira); r.style.width = '.6em'; ruedas[r.dataset.d] = tira;
+  });
+  document.querySelector('.seg').querySelectorAll('.rueda').forEach(r => r.style.width = '.62em');
+  const fijar = (k, n, dur) => {
+    const t = ruedas[k];
+    if (hayGsap && dur) gsap.to(t, {yPercent: -n * 10, duration: dur, ease: 'power3.inOut', overwrite: true});
+    else t.style.transform = `translateY(${-n * 10}%)`;
+  };
+  const partes = d => { const p = n => String(n).padStart(2,'0'); const h=p(d.getHours()), m=p(d.getMinutes()), s=p(d.getSeconds()); return {h1:+h[0],h2:+h[1],m1:+m[0],m2:+m[1],s1:+s[0],s2:+s[1]}; };
+  let ultimo = {};
+  const tic = (dur = .55) => {
+    const p = partes(new Date());
+    for (const k in p) if (p[k] !== ultimo[k]) fijar(k, p[k], dur);
+    ultimo = p;
+  };
+
+  if (!hayGsap || quieto) {
+    tic(0); setInterval(() => tic(0), 1000);
+    velo.remove();
+    return;
+  }
+
+  /* ---------- entrada ---------- */
+  gsap.registerPlugin(ScrollTrigger);
+  for (const k in ruedas) gsap.set(ruedas[k], {yPercent: 0});
+  const foto = document.querySelector('.portada__foto img');
+  gsap.set(foto, {scale: 1.12, filter: 'brightness(.2)'});
+  gsap.set('.portada__pie > *, .barra', {opacity: 0, y: 14});
+  const p0 = partes(new Date());
+  const entrada = gsap.timeline({delay: .15, onComplete: () => { ultimo = partes(new Date()); tic(.4); setInterval(() => tic(), 1000); }});
+  entrada.to(velo, {opacity: 0, duration: .6, ease: 'power1.out'}, 0)
+    .to(foto, {scale: 1, filter: 'brightness(1)', duration: 2.6, ease: 'power3.out'}, .2);
+  ['h1','h2','m1','m2','s1','s2'].forEach((k, i) => {
+    // cada cifra da una vuelta completa antes de caer en la hora real
+    const tira = ruedas[k];
+    entrada.fromTo(tira, {yPercent: 0}, {yPercent: -p0[k] * 10, duration: 1.5 + i * .14, ease: 'expo.inOut'}, .25);
+  });
+  entrada.to('.barra', {opacity: 1, y: 0, duration: .8, ease: 'power2.out'}, 1.6)
+    .to('.portada__pie > *', {opacity: 1, y: 0, duration: .9, stagger: .12, ease: 'power2.out'}, 1.7)
+    .add(() => velo.remove());
+
+  /* ---------- scroll suave ---------- */
+  if (window.Lenis) {
+    const lenis = new Lenis({lerp: .085, smoothWheel: true});
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(t => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+    document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+      const destino = document.querySelector(a.getAttribute('href'));
+      if (destino) { e.preventDefault(); lenis.scrollTo(destino, {duration: 1.6}); }
+    }));
+    window.__lenis = lenis;
+  }
+
+  /* la foto de portada se aleja mientras bajás */
+  gsap.to(foto, {yPercent: 12, scale: 1.06, ease: 'none', scrollTrigger: {trigger: '.portada', start: 'top top', end: 'bottom top', scrub: true}});
+  gsap.to('.portada__hora', {yPercent: -40, opacity: 0, ease: 'none', scrollTrigger: {trigger: '.portada', start: '20% top', end: '80% top', scrub: true}});
+
+  const mm = gsap.matchMedia();
+
+  /* ---------- colección horizontal ---------- */
+  mm.add('(min-width: 901px)', () => {
+    const pista = document.querySelector('.coleccion__pista');
+    const largo = () => pista.scrollWidth - innerWidth;
+    gsap.to(pista, {x: () => -largo(), ease: 'none', scrollTrigger: {
+      trigger: '.coleccion', start: 'top top', end: () => '+=' + largo(), pin: true, scrub: .8, invalidateOnRefresh: true, anticipatePin: 1,
+      onUpdate: s => gsap.set('.coleccion__avance i', {scaleX: s.progress})
+    }});
+  });
+
+  /* ---------- anatomía: la cámara recorre el reloj ---------- */
+  const zoom = document.querySelector('.anatomia__zoom');
+  const pasos = gsap.utils.toArray('.paso');
+  const marcador = document.querySelector('[data-paso]');
+  // punto de la foto (0-1) y aumento para cada paso
+  const tomas = [ {x:.5, y:.5, s:1}, {x:.655, y:.44, s:2.3}, {x:.575, y:.5, s:2.9}, {x:.868, y:.485, s:3.4}, {x:.8, y:.12, s:2.2} ];
+  // nunca dejar ver el borde de la foto: el punto se acota a lo que el aumento permite
+  const acotar = (v, s) => Math.min(1 - .5 / s, Math.max(.5 / s, v));
+  const encuadre = t => ({xPercent: -(acotar(t.x, t.s) - .5) * 100 * t.s, yPercent: -(acotar(t.y, t.s) - .5) * 100 * t.s, scale: t.s});
+  const tl = gsap.timeline({scrollTrigger: {trigger: '.anatomia', start: 'top top', end: 'bottom bottom', scrub: 1,
+    onUpdate: s => { marcador.textContent = Math.min(5, Math.floor(s.progress * 5 * .999) + 1); }}});
+  gsap.set(zoom, encuadre(tomas[0]));
+  tomas.slice(1).forEach((t, i) => {
+    tl.to(zoom, {...encuadre(t), duration: 1, ease: 'power2.inOut'})
+      .to(pasos[i], {opacity: 0, y: -16, duration: .3}, '<')
+      .fromTo(pasos[i + 1], {opacity: 0, y: 16}, {opacity: 1, y: 0, duration: .4}, '<+.5');
+    // en la esfera, el zoom se funde con la macro real; en la caja vuelve
+    if (i === 0) tl.fromTo('.anatomia__macro', {opacity: 0, scale: 1.08}, {opacity: 1, scale: 1, duration: .6}, '<-.1');
+    if (i === 1) tl.to('.anatomia__macro', {opacity: 0, duration: .5}, '<-.4');
+    tl.to({}, {duration: .5});
+  });
+
+  /* ---------- pie: la marca sube despacio ---------- */
+  gsap.from('.pie__marca', {y: '12vw', ease: 'none', scrollTrigger: {trigger: '.pie', start: 'top bottom', end: 'bottom bottom', scrub: true}});
+
+  addEventListener('load', () => ScrollTrigger.refresh());
+})();
+
+/* ---------- reserva ---------- */
+(function(){
+  const dias = document.getElementById('dias');
+  const nombresDia = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  const nombresMes = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const d = new Date(); let puestos = 0;
+  while (puestos < 6) {
+    d.setDate(d.getDate() + 1);
+    if (d.getDay() === 0) continue;
+    const l = document.createElement('label'); l.className = 'opcion';
+    const valor = `${nombresDia[d.getDay()]} ${d.getDate()} de ${nombresMes[d.getMonth()]}`;
+    l.innerHTML = `<input type="radio" name="dia" value="${valor}"><span>${nombresDia[d.getDay()].replace(/^./, c => c.toUpperCase())}<small>${d.getDate()} de ${nombresMes[d.getMonth()]}</small></span>`;
+    dias.append(l); puestos++;
+  }
+  const form = document.getElementById('reserva');
+  const boton = form.querySelector('.enviar');
+  const aviso = document.getElementById('aviso');
+  const leer = () => ({dia: form.dia.value, hora: form.hora.value, nombre: form.nombre.value.trim(), correo: form.correo.value.trim()});
+  form.addEventListener('input', () => {
+    const v = leer();
+    const falta = !v.dia ? 'Elegí un día.' : !v.hora ? 'Elegí un horario.' : !v.nombre ? 'Escribí tu nombre.' : !/^\S+@\S+\.\S+$/.test(v.correo) ? 'Escribí un correo válido para mandarte la dirección.' : '';
+    boton.disabled = !!falta; aviso.textContent = (v.dia || v.hora) ? falta : '';
+  });
+  form.addEventListener('submit', e => {
+    e.preventDefault(); if (boton.disabled) return;
+    const v = leer();
+    const caja = document.createElement('div'); caja.className = 'confirmado'; caja.setAttribute('role','status');
+    caja.innerHTML = `<h3>Visita reservada</h3><p>${v.nombre.split(' ')[0]}, te esperamos el ${v.dia} a las ${v.hora}. La dirección y cómo llegar van a ${v.correo}.</p><button type="button">Cambiar la reserva</button>`;
+    caja.querySelector('button').onclick = () => { caja.replaceWith(form); form.querySelector('input').focus(); };
+    form.replaceWith(caja); caja.querySelector('h3').setAttribute('tabindex','-1'); caja.querySelector('h3').focus();
+  });
+})();
+</script>
+</body>
+</html>
