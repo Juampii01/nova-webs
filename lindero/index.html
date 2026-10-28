@@ -9,9 +9,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* Lindero: la casa se levanta con el scroll, de abajo hacia arriba, con un nivel láser que marca la altura.
+/* Lindero: la casa se construye con el scroll, cuadro por cuadro (176 cuadros de un time-lapse de obra).
    Después la página sigue en el idioma del plano: cajetín, papel cuadriculado, plantas que se dibujan.
-   Tinta azul noche, blanco cal, amarillo de obra solo para acciones y el nivel. */
+   Tinta azul noche, blanco cal, amarillo de obra solo para acciones. */
 :root{
   --noche:#0b1730;
   --tinta:#0d1b33;
@@ -56,17 +56,12 @@ h1,h2,h3{font-family:var(--display);font-weight:800;line-height:.9;letter-spacin
 /* ---------- la obra ---------- */
 .obra{position:relative;height:720vh;background:var(--noche)}
 .obra__escena{position:sticky;top:0;height:100vh;overflow:hidden}
-.obra__foto{position:absolute;inset:0;--sube:0;
-  -webkit-mask-image:linear-gradient(to top,#000 calc(var(--sube) * 1% - 3%),transparent calc(var(--sube) * 1% + 3%));
-          mask-image:linear-gradient(to top,#000 calc(var(--sube) * 1% - 3%),transparent calc(var(--sube) * 1% + 3%))}
-.obra__foto:first-child{--sube:110}
-.obra__foto img{width:100%;height:100%;object-fit:cover;object-position:50% 60%;transform-origin:50% 70%}
+.obra__cine{position:absolute;inset:0;width:100%;height:100%;display:block}
+.obra__foto{position:absolute;inset:0;opacity:0}
+.obra__foto img{width:100%;height:100%;object-fit:cover;object-position:50% 60%}
+.obra__fija{display:none}
 .obra__velo{position:absolute;inset:0;background:linear-gradient(90deg,rgba(9,19,38,.74) 0%,rgba(9,19,38,.35) 36%,rgba(9,19,38,0) 60%),linear-gradient(0deg,rgba(9,19,38,.7) 0%,rgba(9,19,38,0) 30%);pointer-events:none}
 
-/* el nivel láser que sube con la obra */
-.nivel{position:absolute;left:0;right:0;bottom:0;height:0;pointer-events:none;opacity:0}
-.nivel::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--obra);box-shadow:0 0 12px 2px rgba(242,183,5,.55)}
-.nivel span{position:absolute;right:var(--margen);top:-30px;font-family:var(--cota);font-size:13px;color:var(--noche);background:var(--obra);padding:3px 8px;border-radius:2px;font-variant-numeric:tabular-nums}
 
 .obra__textos{position:absolute;left:var(--margen);bottom:clamp(120px,19vh,200px);width:min(580px,86vw);color:var(--blanco)}
 .etapa{position:absolute;left:0;bottom:0;opacity:0}
@@ -161,7 +156,6 @@ input[type=range]{width:100%;accent-color:var(--plano)}
 @media (max-width:900px){
   .barra nav a:not(.boton){display:none}
   .logo span{display:none}
-  .obra__foto img{object-position:42% 60%}
   .obra__velo{background:linear-gradient(0deg,rgba(9,19,38,.88) 0%,rgba(9,19,38,.45) 45%,rgba(9,19,38,.1) 70%)}
   .obra__textos{bottom:110px}
   .etapa p{font-size:16px}
@@ -176,8 +170,10 @@ input[type=range]{width:100%;accent-color:var(--plano)}
 @media (prefers-reduced-motion:reduce){
   .obra{height:auto}
   .obra__escena{position:relative;height:auto}
-  .obra__foto{position:relative;height:70vh;-webkit-mask-image:none;mask-image:none}
-  .obra__foto:not(:first-child),.etapa:not(:first-child),.obra__linea,.obra__aviso,.nivel{display:none}
+  .obra__cine,.obra__foto{display:none}
+  .obra__fija{display:block;position:relative;height:70vh}
+  .obra__fija img{width:100%;height:100%;object-fit:cover}
+  .etapa:not(:first-child),.obra__linea,.obra__aviso{display:none}
   *{transition:none!important}
 }
 </style>
@@ -196,17 +192,10 @@ input[type=range]{width:100%;accent-color:var(--plano)}
 <main>
   <section class="obra" id="obra" aria-label="La obra, de principio a fin">
     <div class="obra__escena">
-      <div class="obra__fotos">
-        <div class="obra__foto"><img src="img/plano.jpg" alt="Terreno vacío con la casa dibujada en líneas de plano azul" fetchpriority="high"></div>
-        <div class="obra__foto"><img src="img/platea.jpg" alt="Platea de hormigón recién colada sobre el terreno"></div>
-        <div class="obra__foto"><img src="img/estructura.jpg" alt="Estructura de hormigón y muros de ladrillo en construcción"></div>
-        <div class="obra__foto"><img src="img/obra-gris.jpg" alt="La casa en obra gris, con muros y techos terminados"></div>
-        <div class="obra__foto"><img src="img/terminaciones.jpg" alt="La casa con aberturas colocadas y pintura en curso"></div>
-        <div class="obra__foto"><img src="img/terminada.jpg" alt="La casa terminada, con revestimiento de madera y jardín"></div>
-        <div class="obra__foto"><img src="img/noche.jpg" alt="La casa terminada de noche, con las luces encendidas"></div>
-      </div>
+      <canvas class="obra__cine" role="img" aria-label="Time-lapse de la obra: del plano y la platea a la casa terminada"></canvas>
+      <div class="obra__foto"><img src="img/noche.jpg" alt="La casa terminada de noche, con las luces encendidas" loading="lazy"></div>
+      <div class="obra__fija"><img src="img/terminada.jpg" alt="La casa terminada, con revestimiento de madera y jardín"></div>
       <div class="obra__velo"></div>
-      <div class="nivel" aria-hidden="true"><span data-nivel>Nivel ±0,00 m</span></div>
 
       <div class="obra__textos">
         <div class="etapa">
@@ -431,49 +420,79 @@ const USD_M2 = 1290;
   }
 
   const obra = document.getElementById('obra');
-  const fotos = gsap.utils.toArray('.obra__foto');
   const etapas = gsap.utils.toArray('.etapa');
   const hitos = gsap.utils.toArray('.obra__linea li');
-  const nivel = document.querySelector('.nivel');
-  const nivelTexto = document.querySelector('[data-nivel]');
-  const pasos = fotos.length - 1;
-  // altura de la casa en la foto: el piso está al 26% desde abajo y el techo al 77%
-  const PISO = 26, TECHO = 77, ALTURA_M = 7.2;
-  const cota = sube => {
-    const m = Math.max(0, Math.min(1, (sube - PISO) / (TECHO - PISO))) * ALTURA_M;
-    return m < .005 ? 'Nivel ±0,00 m' : 'Nivel +' + m.toFixed(2).replace('.', ',') + ' m';
+  const noche = document.querySelector('.obra__foto');
+
+  /* ---- la película: 176 cuadros, 35 por etapa de obra ---- */
+  const TOTAL = 176, POR_TRAMO = 35;
+  const canvas = document.querySelector('.obra__cine');
+  const ctx = canvas.getContext('2d');
+  const cuadros = new Array(TOTAL);
+  let actual = 0;
+  const ruta = i => 'obra/f' + String(i).padStart(3, '0') + '.webp';
+  const dibujar = () => {
+    // el cuadro pedido o, si todavía no bajó, el más cercano que ya esté
+    let k = actual, img = null;
+    for (let d = 0; d < TOTAL && !img; d++) {
+      for (const j of [k - d, k + d]) { const c = cuadros[j]; if (c && c.complete && c.naturalWidth) { img = c; break; } }
+    }
+    if (!img) return;
+    const w = canvas.width, h = canvas.height;
+    const e = Math.max(w / img.naturalWidth, h / img.naturalHeight);
+    const iw = img.naturalWidth * e, ih = img.naturalHeight * e;
+    const fx = innerWidth < 900 ? .42 : .5;
+    ctx.drawImage(img, (w - iw) * fx, (h - ih) * .6, iw, ih);
   };
+  const medir = () => {
+    const r = Math.min(devicePixelRatio || 1, 2);
+    canvas.width = Math.round(canvas.clientWidth * r);
+    canvas.height = Math.round(canvas.clientHeight * r);
+    dibujar();
+  };
+  addEventListener('resize', medir);
+  // carga en pasadas: primero uno cada 8, después cada 4, cada 2 y el resto; así la obra se puede recorrer enseguida
+  const orden = [];
+  for (const paso of [8, 4, 2, 1]) for (let i = 0; i < TOTAL; i += paso) if (!orden.includes(i)) orden.push(i);
+  let cargando = 0;
+  const siguiente = () => {
+    while (cargando < 6 && orden.length) {
+      const i = orden.shift(), img = new Image();
+      cargando++;
+      img.onload = img.onerror = () => { cargando--; if (Math.abs(i - actual) < 9) dibujar(); siguiente(); };
+      img.src = ruta(i); cuadros[i] = img;
+    }
+  };
+  siguiente();
+  cuadros[0].onload = () => { cargando--; medir(); siguiente(); };
 
   // entrada: el plano aparece desde lo oscuro
-  gsap.from(fotos[0].querySelector('img'), {scale: 1.14, filter: 'brightness(.25) saturate(.5)', duration: 2.4, ease: 'power3.out'});
+  gsap.from(canvas, {scale: 1.12, filter: 'brightness(.25) saturate(.5)', duration: 2.4, ease: 'power3.out'});
   gsap.from(etapas[0].children, {opacity: 0, y: 26, duration: 1, stagger: .12, delay: .5, ease: 'power2.out'});
 
-  const tl = gsap.timeline({scrollTrigger: {trigger: obra, start: 'top top', end: 'bottom bottom', scrub: .6,
+  /* ---- el scroll maneja la película, los textos y la línea de obra ---- */
+  const tramos = 5;                       // plano>platea, platea>estructura, estructura>obra gris, obra gris>terminaciones, terminaciones>entrega
+  const estado = {f: 0};
+  const tl = gsap.timeline({scrollTrigger: {trigger: obra, start: 'top top', end: 'bottom bottom', scrub: .5,
     onUpdate: s => {
-      const n = Math.min(5, Math.floor(s.progress * pasos * 1.0001));
+      const n = Math.min(5, Math.floor(estado.f / POR_TRAMO + .35));
       hitos.forEach((h, i) => h.classList.toggle('hecha', i <= n));
-      gsap.set('.obra__avance', {scaleX: Math.min(1, s.progress * pasos / 5)});
+      gsap.set('.obra__avance', {scaleX: Math.min(1, estado.f / (TOTAL - 1))});
     }}});
-
-  for (let i = 1; i <= pasos; i++) {
-    const foto = fotos[i], img = foto.querySelector('img'), t = i - 1;
-    const esNoche = i === pasos;
-    if (esNoche) {
-      // la última no se construye: se encienden las luces
-      tl.fromTo(foto, {'--sube': 110, opacity: 0}, {opacity: 1, duration: .7, ease: 'none'}, t + .2);
-    } else {
-      // la etapa nueva se levanta desde el piso, con el nivel láser marcando la altura
-      tl.fromTo(foto, {'--sube': -4}, {'--sube': 106, duration: .78, ease: 'none',
-          onUpdate: function(){ const v = parseFloat(gsap.getProperty(foto, '--sube')); nivel.style.height = Math.max(0, Math.min(100, v)) + '%'; nivelTexto.textContent = cota(v); }}, t + .14)
-        .fromTo(nivel, {opacity: 0}, {opacity: 1, duration: .06}, t + .14)
-        .to(nivel, {opacity: 0, duration: .08}, t + .86);
-    }
-    // la cámara se acerca apenas mientras la obra avanza
-    tl.fromTo(img, {scale: 1.05}, {scale: 1, duration: 1, ease: 'none'}, t)
-      .to(etapas[i - 1], {opacity: 0, y: -22, duration: .2}, t + .12)
-      .fromTo(etapas[i], {opacity: 0, y: 26}, {opacity: 1, y: 0, duration: .3}, t + .62);
+  tl.to(estado, {f: TOTAL - 1, duration: tramos, ease: 'none', onUpdate: () => {
+    const f = Math.round(estado.f);
+    if (f !== actual) { actual = f; dibujar(); }
+  }}, 0);
+  for (let i = 1; i <= tramos; i++) {
+    // cada texto cambia cuando la obra llega a esa etapa
+    tl.to(etapas[i - 1], {opacity: 0, y: -22, duration: .18}, i - .78)
+      .fromTo(etapas[i], {opacity: 0, y: 26}, {opacity: 1, y: 0, duration: .26}, i - .6);
   }
-  tl.to({}, {duration: .35});
+  // final: se hace de noche y se encienden las luces
+  tl.to(noche, {opacity: 1, duration: .8, ease: 'none'}, tramos + .15)
+    .to(etapas[tramos], {opacity: 0, y: -22, duration: .18}, tramos + .2)
+    .fromTo(etapas[tramos + 1], {opacity: 0, y: 26}, {opacity: 1, y: 0, duration: .3}, tramos + .55)
+    .to({}, {duration: .35});
   gsap.to('.obra__aviso', {opacity: 0, scrollTrigger: {trigger: obra, start: 'top top', end: '+=300', scrub: true}});
 
   /* títulos que suben al entrar (una sola vez) */
