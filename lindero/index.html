@@ -439,11 +439,36 @@ const USD_M2 = 1290;
     }
     if (!img) return;
     const w = canvas.width, h = canvas.height;
-    const e = Math.max(w / img.naturalWidth, h / img.naturalHeight);
-    const iw = img.naturalWidth * e, ih = img.naturalHeight * e;
-    const fx = innerWidth < 900 ? .42 : .5;
-    ctx.drawImage(img, (w - iw) * fx, (h - ih) * .6, iw, ih);
+    const g = geometria(img.naturalWidth, img.naturalHeight, w, h);
+    if (g.ajustada) {
+      // pantalla angosta: la casa entra completa y atrás va la misma imagen ampliada y desenfocada
+      const e = Math.max(w / img.naturalWidth, h / img.naturalHeight);
+      ctx.filter = 'blur(28px) brightness(.45) saturate(.9)';
+      ctx.drawImage(img, (w - img.naturalWidth * e) / 2, (h - img.naturalHeight * e) / 2, img.naturalWidth * e, img.naturalHeight * e);
+      ctx.filter = 'none';
+    }
+    ctx.drawImage(img, g.x, g.y, g.ancho, g.alto);
   };
+  // dónde va el cuadro: en pantallas anchas llena todo; en las angostas entra entero arriba del texto
+  function geometria(nw, nh, w, h){
+    if (w / h >= 1.3) {
+      const e = Math.max(w / nw, h / nh);
+      return {ajustada: false, ancho: nw * e, alto: nh * e, x: (w - nw * e) / 2, y: (h - nh * e) * .6};
+    }
+    // en el celular se recortan solo los árboles de los costados; la casa ocupa del 20% al 85% del cuadro
+    const ancho = w * (w / h < .8 ? 1.32 : 1.08), alto = nh * ancho / nw;
+    const y = Math.max(h * .1, h * .34 - alto / 2);
+    return {ajustada: true, ancho, alto, x: (w - ancho) / 2, y};
+  }
+  // la foto de noche usa la misma geometría que el cuadro, para que el cambio no salte
+  const ubicarNoche = () => {
+    const img = noche.querySelector('img');
+    const g = geometria(16, 9, innerWidth, innerHeight);
+    Object.assign(img.style, g.ajustada
+      ? {position: 'absolute', left: g.x + 'px', top: g.y + 'px', width: g.ancho + 'px', height: g.alto + 'px', objectFit: 'cover', maxWidth: 'none'}
+      : {position: '', left: '', top: '', width: '', height: '', objectFit: '', maxWidth: ''});
+  };
+  addEventListener('resize', ubicarNoche); ubicarNoche();
   const medir = () => {
     const r = Math.min(devicePixelRatio || 1, 2);
     canvas.width = Math.round(canvas.clientWidth * r);
