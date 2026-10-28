@@ -9,16 +9,19 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* Lindero: la casa se construye con el scroll. Fondo blanco cal, tinta azul de plano, amarillo de obra solo para acciones.
-   Títulos condensados de cartel de obra (Big Shoulders), texto en Instrument Sans y cotas de plano en Plex Mono. */
+/* Lindero: la casa se levanta con el scroll, de abajo hacia arriba, con un nivel láser que marca la altura.
+   Después la página sigue en el idioma del plano: cajetín, papel cuadriculado, plantas que se dibujan.
+   Tinta azul noche, blanco cal, amarillo de obra solo para acciones y el nivel. */
 :root{
-  --cal:#f1f3f4;
-  --blanco:#ffffff;
+  --noche:#0b1730;
   --tinta:#0d1b33;
-  --plano:#1d4f9c;
+  --cal:#eef1f3;
+  --blanco:#ffffff;
+  --plano:#17448c;
   --gris:#5d6878;
-  --linea:#cbd2db;
+  --linea:#c7cfd9;
   --obra:#f2b705;
+  --grilla:rgba(23,68,140,.07);
   --display:"Big Shoulders Display", "Arial Narrow", Arial, sans-serif;
   --texto:"Instrument Sans", "Helvetica Neue", Arial, sans-serif;
   --cota:"IBM Plex Mono", ui-monospace, Menlo, monospace;
@@ -26,16 +29,19 @@
   color-scheme:light;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--cal);color:var(--tinta);font-family:var(--texto);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{background:var(--noche);color:var(--tinta);font-family:var(--texto);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img{display:block;max-width:100%}
 a{color:inherit}
 button,input,select{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--obra);outline-offset:3px}
 h1,h2,h3{font-family:var(--display);font-weight:800;line-height:.9;letter-spacing:.005em;text-wrap:balance}
+.revela{display:block;overflow:hidden;padding-bottom:.06em}
+.revela > span{display:block}
+.cuadricula{background-color:var(--cal);background-image:linear-gradient(var(--grilla) 1px,transparent 1px),linear-gradient(90deg,var(--grilla) 1px,transparent 1px);background-size:32px 32px}
 
 /* barra */
-.barra{position:fixed;inset:0 0 auto;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:24px;padding:16px max(var(--margen),env(safe-area-inset-left,0px));color:var(--blanco);transition:background .35s,color .35s}
-.barra.solida{background:var(--cal);color:var(--tinta);box-shadow:0 1px 0 var(--linea)}
+.barra{position:fixed;inset:0 0 auto;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:24px;padding:16px max(var(--margen),env(safe-area-inset-left,0px));color:var(--blanco);transition:background .35s,color .35s,box-shadow .35s}
+.barra.clara{background:rgba(238,241,243,.94);backdrop-filter:blur(8px);color:var(--tinta);box-shadow:0 1px 0 var(--linea)}
 .logo{display:flex;align-items:baseline;gap:10px;text-decoration:none}
 .logo b{font-family:var(--display);font-weight:800;font-size:26px;letter-spacing:.08em}
 .logo span{font-size:13px;opacity:.8}
@@ -44,67 +50,94 @@ h1,h2,h3{font-family:var(--display);font-weight:800;line-height:.9;letter-spacin
 .barra nav a:not(.boton):hover{text-decoration:underline;text-underline-offset:4px}
 .boton{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:3px;background:var(--obra);color:var(--tinta);font-weight:600;font-size:15px;text-decoration:none;border:0;cursor:pointer;transition:background .2s}
 .boton:hover{background:#ffcd2e}
+.boton--linea{background:transparent;border:1px solid currentColor;color:inherit}
+.boton--linea:hover{background:rgba(255,255,255,.1)}
 
-/* la obra: escena fija que avanza con el scroll */
-.obra{position:relative;height:640vh;background:var(--tinta)}
+/* ---------- la obra ---------- */
+.obra{position:relative;height:720vh;background:var(--noche)}
 .obra__escena{position:sticky;top:0;height:100vh;overflow:hidden}
-.obra__foto{position:absolute;inset:0;opacity:0}
-.obra__foto:first-child{opacity:1}
-.obra__foto img{width:100%;height:100%;object-fit:cover;object-position:50% 60%}
-.obra__velo{position:absolute;inset:0;background:linear-gradient(90deg,rgba(9,19,38,.72) 0%,rgba(9,19,38,.35) 38%,rgba(9,19,38,0) 62%),linear-gradient(0deg,rgba(9,19,38,.65) 0%,rgba(9,19,38,0) 30%);pointer-events:none}
-.obra__textos{position:absolute;left:var(--margen);bottom:clamp(110px,18vh,190px);width:min(560px,86vw);color:var(--blanco)}
+.obra__foto{position:absolute;inset:0;--sube:0;
+  -webkit-mask-image:linear-gradient(to top,#000 calc(var(--sube) * 1% - 3%),transparent calc(var(--sube) * 1% + 3%));
+          mask-image:linear-gradient(to top,#000 calc(var(--sube) * 1% - 3%),transparent calc(var(--sube) * 1% + 3%))}
+.obra__foto:first-child{--sube:110}
+.obra__foto img{width:100%;height:100%;object-fit:cover;object-position:50% 60%;transform-origin:50% 70%}
+.obra__velo{position:absolute;inset:0;background:linear-gradient(90deg,rgba(9,19,38,.74) 0%,rgba(9,19,38,.35) 36%,rgba(9,19,38,0) 60%),linear-gradient(0deg,rgba(9,19,38,.7) 0%,rgba(9,19,38,0) 30%);pointer-events:none}
+
+/* el nivel láser que sube con la obra */
+.nivel{position:absolute;left:0;right:0;bottom:0;height:0;pointer-events:none;opacity:0}
+.nivel::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--obra);box-shadow:0 0 12px 2px rgba(242,183,5,.55)}
+.nivel span{position:absolute;right:var(--margen);top:-30px;font-family:var(--cota);font-size:13px;color:var(--noche);background:var(--obra);padding:3px 8px;border-radius:2px;font-variant-numeric:tabular-nums}
+
+.obra__textos{position:absolute;left:var(--margen);bottom:clamp(120px,19vh,200px);width:min(580px,86vw);color:var(--blanco)}
 .etapa{position:absolute;left:0;bottom:0;opacity:0}
 .etapa:first-child{opacity:1}
-.etapa__semana{font-family:var(--cota);font-size:13px;letter-spacing:.02em;color:var(--obra);margin-bottom:14px}
+.etapa__semana{font-family:var(--cota);font-size:13px;color:var(--obra);margin-bottom:14px}
 .etapa h1,.etapa h2{font-size:clamp(56px,8.5vw,138px);margin-bottom:18px}
 .etapa p{max-width:40ch;color:#dfe5ee;font-size:18px}
 .etapa .boton{margin-top:24px}
 .obra__linea{position:absolute;left:var(--margen);right:var(--margen);bottom:40px;color:var(--blanco)}
 .obra__linea ol{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);border-top:1px solid rgba(255,255,255,.35)}
 .obra__linea li{position:relative;padding-top:12px;font-family:var(--cota);font-size:12px;color:rgba(255,255,255,.55);transition:color .3s}
-.obra__linea li::before{content:"";position:absolute;left:0;top:-5px;width:9px;height:9px;border-radius:50%;background:var(--tinta);border:1px solid rgba(255,255,255,.55);transition:background .3s,border-color .3s}
+.obra__linea li::before{content:"";position:absolute;left:0;top:-5px;width:9px;height:9px;border-radius:50%;background:var(--noche);border:1px solid rgba(255,255,255,.55);transition:background .3s,border-color .3s}
 .obra__linea li.hecha{color:var(--blanco)}
 .obra__linea li.hecha::before{background:var(--obra);border-color:var(--obra)}
 .obra__avance{position:absolute;left:0;top:-1px;height:2px;width:100%;background:var(--obra);transform-origin:left;transform:scaleX(0)}
-.obra__aviso{position:absolute;right:var(--margen);bottom:clamp(110px,18vh,190px);color:rgba(255,255,255,.75);font-size:14px;writing-mode:vertical-rl;transform:rotate(180deg)}
+.obra__aviso{position:absolute;right:var(--margen);bottom:clamp(120px,19vh,200px);color:rgba(255,255,255,.75);font-size:14px;writing-mode:vertical-rl;transform:rotate(180deg)}
 
-/* propuesta */
-.propuesta{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:32px 80px;padding:clamp(90px,14vh,160px) var(--margen);align-items:end}
-.propuesta h2{font-size:clamp(48px,6.4vw,104px)}
-.propuesta p{font-size:20px;max-width:46ch}
-.propuesta p + p{margin-top:16px;color:var(--gris);font-size:17px}
+/* ---------- cajetín (sigue la noche) ---------- */
+.cajetin{background:var(--noche);color:var(--cal);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:48px 88px;padding:clamp(100px,16vh,180px) var(--margen);align-items:center}
+.cajetin h2{font-size:clamp(52px,7vw,120px);color:var(--blanco)}
+.cajetin__lead{margin-top:26px;max-width:42ch;color:#b8c3d3;font-size:19px}
+.plano{border:1.5px solid rgba(238,241,243,.55);font-family:var(--cota);font-size:14px}
+.plano__cabeza{display:flex;justify-content:space-between;padding:14px 18px;border-bottom:1.5px solid rgba(238,241,243,.55)}
+.plano__cabeza b{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:.08em}
+.plano dl{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr)}
+.plano dt,.plano dd{padding:13px 18px;border-bottom:1px solid rgba(238,241,243,.18)}
+.plano dt{color:#8fa0b8;border-right:1px solid rgba(238,241,243,.18)}
+.plano dd{color:var(--blanco)}
+.plano dd.precio{color:var(--obra);font-size:16px}
+.plano__pie{display:flex;justify-content:space-between;padding:12px 18px;color:#8fa0b8;font-size:12px}
 
-/* modelos */
-.modelos{padding:0 var(--margen) clamp(90px,14vh,160px)}
-.modelos__cabeza{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:28px;border-bottom:2px solid var(--tinta);flex-wrap:wrap}
-.modelos__cabeza h2{font-size:clamp(44px,5.4vw,88px)}
-.modelos__cabeza p{color:var(--gris);max-width:40ch}
-.modelo{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px 56px;padding:44px 0;border-bottom:1px solid var(--linea);align-items:center}
-.modelo:nth-child(even){grid-template-columns:minmax(0,1fr) minmax(0,1.5fr)}
-.modelo:nth-child(even) .modelo__foto{order:2}
-.modelo__foto{overflow:hidden;aspect-ratio:4/3;background:#dde3e9}
-.modelo__foto img{width:100%;height:100%;object-fit:cover;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
-.modelo:hover .modelo__foto img{transform:scale(1.03)}
-.modelo h3{font-size:clamp(44px,4.6vw,76px);margin-bottom:10px}
+/* ---------- modelos ---------- */
+.modelos{padding:clamp(100px,16vh,180px) var(--margen)}
+.seccion__cabeza{display:flex;justify-content:space-between;align-items:flex-end;gap:24px 48px;padding-bottom:30px;border-bottom:2px solid var(--tinta);flex-wrap:wrap}
+.seccion__cabeza h2{font-size:clamp(48px,6vw,100px)}
+.seccion__cabeza p{color:var(--gris);max-width:40ch}
+.modelo{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:32px 64px;padding:64px 0;border-bottom:1px solid var(--linea);align-items:start}
+.modelo:nth-child(odd){grid-template-columns:minmax(0,1fr) minmax(0,1.55fr)}
+.modelo:nth-child(odd) .modelo__foto{order:2}
+.modelo__foto{position:relative;overflow:hidden;aspect-ratio:4/3;background:#d6dde5}
+.modelo__foto img{width:100%;height:100%;object-fit:cover}
+.modelo__foto figcaption{position:absolute;left:14px;bottom:14px;font-family:var(--cota);font-size:12px;color:var(--blanco);background:rgba(11,23,48,.72);padding:5px 9px;border-radius:2px}
+.modelo h3{font-size:clamp(48px,5vw,84px);margin-bottom:10px}
 .modelo__bajada{color:var(--gris);margin-bottom:22px;max-width:40ch}
+.planta{display:block;width:100%;height:auto;margin:6px 0 22px;color:var(--plano)}
+.planta path,.planta rect,.planta line{fill:none;stroke:currentColor;stroke-width:2.2;vector-effect:non-scaling-stroke}
+.planta .muro{stroke-width:4.5}
+.planta text{font-family:var(--cota);font-size:11px;fill:var(--gris)}
 .ficha{display:grid;grid-template-columns:auto 1fr;border-top:1px solid var(--linea)}
-.ficha dt,.ficha dd{padding:11px 0;border-bottom:1px solid var(--linea);font-size:15px}
+.ficha dt,.ficha dd{padding:10px 0;border-bottom:1px solid var(--linea);font-size:15px}
 .ficha dt{color:var(--gris);padding-right:28px}
 .ficha dd{font-family:var(--cota);font-size:14px;text-align:right;font-variant-numeric:tabular-nums}
-.modelo .boton{margin-top:24px}
+.ficha dd.precio{font-size:16px;font-weight:500;color:var(--tinta)}
+.modelo .boton{margin-top:26px}
 
-/* cómo trabajamos */
-.metodo{background:var(--tinta);color:var(--cal);padding:clamp(90px,14vh,160px) var(--margen)}
-.metodo h2{font-size:clamp(48px,6vw,96px);max-width:12ch;margin-bottom:56px}
-.metodo dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px 80px;max-width:1100px}
-.metodo dt{font-family:var(--display);font-weight:700;font-size:30px;letter-spacing:.01em;margin-bottom:10px;color:var(--blanco)}
-.metodo dd{color:#b8c3d3;max-width:44ch}
+/* ---------- método ---------- */
+.metodo{background-color:var(--plano);color:var(--blanco);background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);background-size:32px 32px;padding:clamp(100px,16vh,180px) var(--margen)}
+.metodo .seccion__cabeza{border-color:var(--blanco)}
+.metodo .seccion__cabeza p{color:#c9d6ea}
+.pasos{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:56px;border-top:1px solid rgba(255,255,255,.35)}
+.pasos li{position:relative;padding:28px 28px 0 0}
+.pasos li::before{content:"";position:absolute;left:0;top:-6px;width:11px;height:11px;border-radius:50%;background:var(--obra)}
+.pasos small{display:block;font-family:var(--cota);font-size:13px;color:var(--obra);margin-bottom:12px}
+.pasos h3{font-size:34px;margin-bottom:12px;letter-spacing:.01em}
+.pasos p{color:#d3deef;font-size:16px;max-width:30ch}
 
-/* presupuesto */
-.presupuesto{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:48px 80px;padding:clamp(90px,14vh,160px) var(--margen)}
-.presupuesto h2{font-size:clamp(48px,6vw,96px)}
-.presupuesto__lead{margin-top:20px;color:var(--gris);max-width:40ch}
-form{display:flex;flex-direction:column;gap:26px}
+/* ---------- presupuesto ---------- */
+.presupuesto{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:48px 88px;padding:clamp(100px,16vh,180px) var(--margen)}
+.presupuesto h2{font-size:clamp(52px,6.4vw,108px)}
+.presupuesto__lead{margin-top:22px;color:var(--gris);max-width:40ch}
+form{display:flex;flex-direction:column;gap:26px;background:var(--blanco);border:1px solid var(--linea);padding:clamp(22px,3vw,36px)}
 fieldset{border:0}
 legend,.campo label{display:block;font-size:14px;color:var(--gris);margin-bottom:10px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -113,36 +146,38 @@ legend,.campo label{display:block;font-size:14px;color:var(--gris);margin-bottom
 .chip span{display:block;padding:10px 16px;border:1px solid var(--linea);border-radius:3px;background:var(--blanco);font-size:15px;cursor:pointer;transition:border-color .2s,background .2s}
 .chip input:checked + span{border-color:var(--tinta);background:var(--tinta);color:var(--blanco)}
 .chip input:focus-visible + span{outline:2px solid var(--obra);outline-offset:2px}
+.campos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .campo select,.campo input[type=text]{width:100%;padding:12px 14px;border:1px solid var(--linea);border-radius:3px;background:var(--blanco)}
 .medida{display:flex;align-items:baseline;justify-content:space-between;gap:16px}
 .medida output{font-family:var(--cota);font-size:15px}
 input[type=range]{width:100%;accent-color:var(--plano)}
-.estimado{background:var(--blanco);border:1px solid var(--linea);border-left:4px solid var(--obra);padding:18px 20px}
-.estimado b{display:block;font-family:var(--display);font-weight:800;font-size:44px;line-height:1;margin:4px 0 6px;font-variant-numeric:tabular-nums}
-.estimado small{color:var(--gris);font-size:13px}
+.estimado{background:var(--noche);color:var(--blanco);padding:20px 22px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.estimado b{display:block;font-family:var(--display);font-weight:800;font-size:52px;line-height:1;color:var(--obra);font-variant-numeric:tabular-nums}
+.estimado small{color:#a9b6c9;font-size:13px;max-width:30ch}
 .aviso{font-size:14px;color:var(--gris);min-height:1.3em}
 
-.pie{border-top:1px solid var(--linea);padding:28px var(--margen) 36px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--gris)}
+.pie{background:var(--noche);color:#8fa0b8;padding:28px var(--margen) 36px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:14px}
 
 @media (max-width:900px){
   .barra nav a:not(.boton){display:none}
   .logo span{display:none}
   .obra__foto img{object-position:42% 60%}
-  .obra__velo{background:linear-gradient(0deg,rgba(9,19,38,.85) 0%,rgba(9,19,38,.45) 45%,rgba(9,19,38,.1) 70%)}
+  .obra__velo{background:linear-gradient(0deg,rgba(9,19,38,.88) 0%,rgba(9,19,38,.45) 45%,rgba(9,19,38,.1) 70%)}
   .obra__textos{bottom:110px}
   .etapa p{font-size:16px}
   .obra__linea li{font-size:0}
   .obra__aviso{display:none}
-  .propuesta,.modelo,.modelo:nth-child(even),.presupuesto{grid-template-columns:1fr}
-  .modelo:nth-child(even) .modelo__foto{order:0}
-  .metodo dl{grid-template-columns:1fr}
+  .cajetin,.modelo,.modelo:nth-child(odd),.presupuesto{grid-template-columns:1fr}
+  .modelo:nth-child(odd) .modelo__foto{order:0}
+  .pasos{grid-template-columns:1fr 1fr;gap:40px 0}
+  .campos{grid-template-columns:1fr}
 }
+@media (max-width:560px){ .pasos{grid-template-columns:1fr} }
 @media (prefers-reduced-motion:reduce){
   .obra{height:auto}
   .obra__escena{position:relative;height:auto}
-  .obra__foto{position:relative;opacity:1;height:70vh}
-  .obra__foto:not(:first-child){display:none}
-  .etapa:not(:first-child),.obra__linea,.obra__aviso{display:none}
+  .obra__foto{position:relative;height:70vh;-webkit-mask-image:none;mask-image:none}
+  .obra__foto:not(:first-child),.etapa:not(:first-child),.obra__linea,.obra__aviso,.nivel{display:none}
   *{transition:none!important}
 }
 </style>
@@ -163,14 +198,15 @@ input[type=range]{width:100%;accent-color:var(--plano)}
     <div class="obra__escena">
       <div class="obra__fotos">
         <div class="obra__foto"><img src="img/plano.jpg" alt="Terreno vacío con la casa dibujada en líneas de plano azul" fetchpriority="high"></div>
-        <div class="obra__foto"><img src="img/platea.jpg" alt="Platea de hormigón recién colada sobre el terreno" loading="lazy"></div>
-        <div class="obra__foto"><img src="img/estructura.jpg" alt="Estructura de hormigón y muros de ladrillo en construcción" loading="lazy"></div>
-        <div class="obra__foto"><img src="img/obra-gris.jpg" alt="La casa en obra gris, con muros y techos terminados" loading="lazy"></div>
-        <div class="obra__foto"><img src="img/terminaciones.jpg" alt="La casa con aberturas colocadas y pintura en curso" loading="lazy"></div>
-        <div class="obra__foto"><img src="img/terminada.jpg" alt="La casa terminada, con revestimiento de madera y jardín" loading="lazy"></div>
-        <div class="obra__foto"><img src="img/noche.jpg" alt="La casa terminada de noche, con las luces encendidas" loading="lazy"></div>
+        <div class="obra__foto"><img src="img/platea.jpg" alt="Platea de hormigón recién colada sobre el terreno"></div>
+        <div class="obra__foto"><img src="img/estructura.jpg" alt="Estructura de hormigón y muros de ladrillo en construcción"></div>
+        <div class="obra__foto"><img src="img/obra-gris.jpg" alt="La casa en obra gris, con muros y techos terminados"></div>
+        <div class="obra__foto"><img src="img/terminaciones.jpg" alt="La casa con aberturas colocadas y pintura en curso"></div>
+        <div class="obra__foto"><img src="img/terminada.jpg" alt="La casa terminada, con revestimiento de madera y jardín"></div>
+        <div class="obra__foto"><img src="img/noche.jpg" alt="La casa terminada de noche, con las luces encendidas"></div>
       </div>
       <div class="obra__velo"></div>
+      <div class="nivel" aria-hidden="true"><span data-nivel>Nivel ±0,00 m</span></div>
 
       <div class="obra__textos">
         <div class="etapa">
@@ -194,63 +230,98 @@ input[type=range]{width:100%;accent-color:var(--plano)}
     </div>
   </section>
 
-  <section class="propuesta" aria-labelledby="propuesta-titulo">
-    <h2 id="propuesta-titulo">Un precio, firmado antes de empezar</h2>
+  <section class="cajetin" aria-labelledby="cajetin-titulo">
     <div>
-      <p>Te pasamos el valor por metro cuadrado en dólares y no se mueve aunque cambie el precio del hormigón. Pagás por etapa terminada, nunca por adelantado.</p>
-      <p>Cada viernes recibís fotos de la obra y el avance en un parte de una página. Si querés visitar, coordinamos con el director de obra.</p>
+      <h2 id="cajetin-titulo" class="revela"><span>Un precio, firmado antes de empezar</span></h2>
+      <p class="cajetin__lead">El valor por metro cuadrado queda en el contrato y no se mueve aunque cambie el precio del hormigón. Pagás cada etapa cuando está terminada, nunca por adelantado.</p>
+    </div>
+    <div class="plano" role="group" aria-label="Datos de obra">
+      <div class="plano__cabeza"><b>LINDERO</b><span>Hoja 1 de 1</span></div>
+      <dl>
+        <dt>Obra</dt><dd>Vivienda unifamiliar a medida</dd>
+        <dt>Sistema</dt><dd>Hormigón armado y ladrillo cerámico</dd>
+        <dt>Superficie</dt><dd>De 120 a 400 m² cubiertos</dd>
+        <dt>Plazo</dt><dd>26 a 38 semanas</dd>
+        <dt>Pagos</dt><dd>Por certificado de avance</dd>
+        <dt>Garantía</dt><dd>10 años sobre estructura</dd>
+        <dt>Valor</dt><dd class="precio">USD 1.290 / m², cerrado</dd>
+      </dl>
+      <div class="plano__pie"><span>Escala 1:100</span><span>Zona norte y sur, Buenos Aires</span></div>
     </div>
   </section>
 
-  <section class="modelos" id="modelos" aria-labelledby="modelos-titulo">
-    <div class="modelos__cabeza">
-      <h2 id="modelos-titulo">Tres modelos para empezar</h2>
-      <p>Todos se adaptan a tu lote y a tu familia: son el punto de partida, no un catálogo cerrado.</p>
+  <section class="modelos cuadricula" id="modelos" aria-labelledby="modelos-titulo">
+    <div class="seccion__cabeza">
+      <h2 id="modelos-titulo" class="revela"><span>Tres modelos para empezar</span></h2>
+      <p>Cada uno se adapta a tu lote y a tu familia. Son el punto de partida, no un catálogo cerrado.</p>
     </div>
 
     <article class="modelo">
-      <div class="modelo__foto"><img src="img/modelo-ombu.jpg" alt="Casa Ombú: casa de una planta de ladrillo visto con galería de hierro" loading="lazy"></div>
+      <figure class="modelo__foto"><img src="img/modelo-ombu.jpg" alt="Casa Ombú: casa de una planta de ladrillo visto con galería de hierro" loading="lazy"><figcaption>Vista desde el jardín</figcaption></figure>
       <div>
         <h3>Casa Ombú</h3>
         <p class="modelo__bajada">Una planta, ladrillo visto y galería de hierro. Pensada para lotes de 600 m².</p>
+        <svg class="planta" viewBox="0 0 400 190" role="img" aria-label="Planta de Casa Ombú: estar y cocina integrados, tres dormitorios y galería">
+          <rect class="muro" x="10" y="10" width="300" height="150"/>
+          <line class="muro" x1="140" y1="10" x2="140" y2="160"/><line x1="140" y1="85" x2="310" y2="85"/>
+          <line x1="225" y1="85" x2="225" y2="160"/><line x1="225" y1="10" x2="225" y2="85"/>
+          <rect x="310" y="40" width="80" height="120"/>
+          <path d="M140 120 a24 24 0 0 1 24 -24"/><path d="M60 160 a26 26 0 0 0 26 -26"/>
+          <text x="40" y="80">Estar y cocina</text><text x="160" y="50">Dorm. 1</text><text x="240" y="50">Dorm. 2</text><text x="170" y="128">Dorm. 3</text><text x="240" y="128">Baños</text><text x="322" y="104">Galería</text>
+        </svg>
         <dl class="ficha">
           <dt>Superficie cubierta</dt><dd>142 m²</dd>
           <dt>Dormitorios</dt><dd>3</dd>
           <dt>Baños</dt><dd>2</dd>
           <dt>Plazo de obra</dt><dd>26 semanas</dd>
-          <dt>Desde</dt><dd>USD 184.000</dd>
+          <dt>Desde</dt><dd class="precio">USD 184.000</dd>
         </dl>
         <a class="boton" href="#presupuesto" data-modelo="Casa Ombú">Quiero este modelo</a>
       </div>
     </article>
 
     <article class="modelo">
-      <div class="modelo__foto"><img src="img/modelo-tala.jpg" alt="Casa Tala: casa de dos plantas blanca con pileta y deck" loading="lazy"></div>
+      <figure class="modelo__foto"><img src="img/modelo-tala.jpg" alt="Casa Tala: casa de dos plantas blanca con pileta y deck" loading="lazy"><figcaption>Fondo con pileta de 8 × 3,5 m</figcaption></figure>
       <div>
         <h3>Casa Tala</h3>
-        <p class="modelo__bajada">Dos plantas, galería de ancho completo y pileta de 8 × 3,5 m incluida.</p>
+        <p class="modelo__bajada">Dos plantas, galería de ancho completo y pileta incluida.</p>
+        <svg class="planta" viewBox="0 0 400 190" role="img" aria-label="Planta baja de Casa Tala: estar, comedor, cocina, galería y pileta">
+          <rect class="muro" x="10" y="10" width="270" height="110"/>
+          <line class="muro" x1="110" y1="10" x2="110" y2="120"/><line x1="200" y1="10" x2="200" y2="120"/>
+          <rect x="10" y="120" width="270" height="40"/>
+          <rect x="300" y="60" width="90" height="110"/>
+          <path d="M110 70 a22 22 0 0 1 22 -22"/>
+          <text x="30" y="70">Estar</text><text x="128" y="96">Comedor</text><text x="215" y="70">Cocina</text><text x="110" y="146">Galería</text><text x="322" y="120">Pileta</text>
+        </svg>
         <dl class="ficha">
           <dt>Superficie cubierta</dt><dd>288 m²</dd>
           <dt>Dormitorios</dt><dd>4 en suite</dd>
           <dt>Baños</dt><dd>5</dd>
           <dt>Plazo de obra</dt><dd>38 semanas</dd>
-          <dt>Desde</dt><dd>USD 418.000</dd>
+          <dt>Desde</dt><dd class="precio">USD 418.000</dd>
         </dl>
         <a class="boton" href="#presupuesto" data-modelo="Casa Tala">Quiero este modelo</a>
       </div>
     </article>
 
     <article class="modelo">
-      <div class="modelo__foto"><img src="img/modelo-calden.jpg" alt="Casa Caldén: casa de dos plantas con techo a dos aguas y revestimiento de madera oscura" loading="lazy"></div>
+      <figure class="modelo__foto"><img src="img/modelo-calden.jpg" alt="Casa Caldén: casa de dos plantas con techo a dos aguas y revestimiento de madera oscura" loading="lazy"><figcaption>Techo de chapa a dos aguas</figcaption></figure>
       <div>
         <h3>Casa Caldén</h3>
-        <p class="modelo__bajada">Techo de chapa a dos aguas y madera oscura. Para chacras y lotes con vista abierta.</p>
+        <p class="modelo__bajada">Madera oscura y chapa. Para chacras y lotes con vista abierta.</p>
+        <svg class="planta" viewBox="0 0 400 190" role="img" aria-label="Planta baja de Casa Caldén: estar en doble altura, cocina, dormitorio y escalera">
+          <rect class="muro" x="10" y="10" width="330" height="150"/>
+          <line class="muro" x1="200" y1="10" x2="200" y2="160"/><line x1="200" y1="90" x2="340" y2="90"/>
+          <line x1="230" y1="100" x2="230" y2="150"/><line x1="245" y1="100" x2="245" y2="150"/><line x1="260" y1="100" x2="260" y2="150"/><line x1="275" y1="100" x2="275" y2="150"/>
+          <path d="M200 60 a24 24 0 0 1 24 -24"/>
+          <text x="40" y="80">Estar doble altura</text><text x="250" y="55">Cocina</text><text x="290" y="130">Dorm.</text><text x="210" y="178">Escalera</text>
+        </svg>
         <dl class="ficha">
           <dt>Superficie cubierta</dt><dd>196 m²</dd>
           <dt>Dormitorios</dt><dd>3</dd>
           <dt>Baños</dt><dd>3</dd>
           <dt>Plazo de obra</dt><dd>32 semanas</dd>
-          <dt>Desde</dt><dd>USD 262.000</dd>
+          <dt>Desde</dt><dd class="precio">USD 262.000</dd>
         </dl>
         <a class="boton" href="#presupuesto" data-modelo="Casa Caldén">Quiero este modelo</a>
       </div>
@@ -258,18 +329,21 @@ input[type=range]{width:100%;accent-color:var(--plano)}
   </section>
 
   <section class="metodo" id="metodo" aria-labelledby="metodo-titulo">
-    <h2 id="metodo-titulo">Cómo construimos</h2>
-    <dl>
-      <div><dt>Precio cerrado en dólares</dt><dd>El valor por metro cuadrado queda firmado en el contrato. Los cambios que pidas durante la obra se cotizan aparte y por escrito.</dd></div>
-      <div><dt>Pago por certificado</dt><dd>Pagás cada etapa cuando el director de obra la certifica terminada. Sin anticipos grandes ni sorpresas.</dd></div>
-      <div><dt>Parte de obra cada viernes</dt><dd>Fotos, avance de la semana y lo que viene, en una página. Sabés en qué está tu casa sin tener que llamar.</dd></div>
-      <div><dt>Garantía estructural</dt><dd>Diez años sobre estructura y un año sobre instalaciones y terminaciones desde la entrega de llaves.</dd></div>
-    </dl>
+    <div class="seccion__cabeza">
+      <h2 id="metodo-titulo" class="revela"><span>Cómo construimos</span></h2>
+      <p>Cuatro reglas que están en el contrato, no en una promesa.</p>
+    </div>
+    <ol class="pasos">
+      <li><small>Antes de firmar</small><h3>Precio cerrado</h3><p>Valor por m² en dólares firmado. Los cambios que pidas durante la obra se cotizan aparte y por escrito.</p></li>
+      <li><small>Durante la obra</small><h3>Pago por etapa</h3><p>Pagás cada certificado cuando el director de obra lo aprueba. Sin anticipos grandes.</p></li>
+      <li><small>Cada viernes</small><h3>Parte de obra</h3><p>Fotos, avance de la semana y lo que viene, en una página. Sin tener que llamar.</p></li>
+      <li><small>Después de la llave</small><h3>Garantía</h3><p>Diez años sobre estructura y uno sobre instalaciones y terminaciones.</p></li>
+    </ol>
   </section>
 
-  <section class="presupuesto" id="presupuesto" aria-labelledby="presupuesto-titulo">
+  <section class="presupuesto cuadricula" id="presupuesto" aria-labelledby="presupuesto-titulo">
     <div>
-      <h2 id="presupuesto-titulo">Pedí tu presupuesto</h2>
+      <h2 id="presupuesto-titulo" class="revela"><span>Pedí tu presupuesto</span></h2>
       <p class="presupuesto__lead">Contanos dónde querés construir y cuánto necesitás. Te mostramos un valor orientativo acá mismo y lo afinamos en la primera reunión.</p>
     </div>
     <form id="form-presupuesto" novalidate>
@@ -281,26 +355,19 @@ input[type=range]{width:100%;accent-color:var(--plano)}
           <label class="chip"><input type="radio" name="lote" value="Todavía no"><span>Todavía no</span></label>
         </div>
       </fieldset>
-      <div class="campo">
-        <label for="zona">Zona</label>
-        <select id="zona" name="zona">
-          <option>Pilar</option><option>Escobar</option><option>Tigre y Nordelta</option><option>Canning</option><option>Otra zona</option>
-        </select>
-      </div>
-      <div class="campo">
-        <label for="modelo">Modelo</label>
-        <select id="modelo" name="modelo">
-          <option>Todavía no sé</option><option>Casa Ombú</option><option>Casa Tala</option><option>Casa Caldén</option><option>Proyecto propio</option>
-        </select>
+      <div class="campos">
+        <div class="campo"><label for="zona">Zona</label>
+          <select id="zona" name="zona"><option>Pilar</option><option>Escobar</option><option>Tigre y Nordelta</option><option>Canning</option><option>Otra zona</option></select></div>
+        <div class="campo"><label for="modelo">Modelo</label>
+          <select id="modelo" name="modelo"><option>Todavía no sé</option><option>Casa Ombú</option><option>Casa Tala</option><option>Casa Caldén</option><option>Proyecto propio</option></select></div>
       </div>
       <div class="campo">
         <div class="medida"><label for="m2">Metros cuadrados cubiertos</label><output id="m2-valor" for="m2">180 m²</output></div>
         <input type="range" id="m2" name="m2" min="100" max="400" step="5" value="180">
       </div>
       <div class="estimado" aria-live="polite">
-        <small>Valor orientativo de obra</small>
-        <b data-estimado>USD 0</b>
-        <small>A USD 1.290 por m² con terminaciones estándar. No incluye lote ni honorarios del barrio.</small>
+        <div><small>Valor orientativo de obra</small><b data-estimado>USD 0</b></div>
+        <small>A USD 1.290 por m² con terminaciones estándar. No incluye lote ni gastos del barrio.</small>
       </div>
       <div class="campo"><label for="nombre">Tu nombre</label><input type="text" id="nombre" name="nombre" autocomplete="name"></div>
       <button class="boton" type="submit">Mandar por WhatsApp</button>
@@ -341,13 +408,14 @@ const USD_M2 = 1290;
   });
 })();
 
-/* ---------- la obra ---------- */
+/* ---------- la obra y la página ---------- */
 (function(){
   const barra = document.getElementById('barra');
-  const obra = document.getElementById('obra');
+  const claras = [...document.querySelectorAll('.cuadricula')];
+  const pintarBarra = () => barra.classList.toggle('clara', claras.some(s => { const r = s.getBoundingClientRect(); return r.top < 60 && r.bottom > 60; }));
+  addEventListener('scroll', pintarBarra, {passive: true}); pintarBarra();
+
   const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const marcarBarra = () => barra.classList.toggle('solida', obra.getBoundingClientRect().bottom < 80);
-  addEventListener('scroll', marcarBarra, {passive: true}); marcarBarra();
   if (!window.gsap || quieto) return;
   gsap.registerPlugin(ScrollTrigger);
 
@@ -358,35 +426,76 @@ const USD_M2 = 1290;
     gsap.ticker.lagSmoothing(0);
     document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
       const d = document.querySelector(a.getAttribute('href'));
-      if (d) { e.preventDefault(); lenis.scrollTo(d, {duration: 1.4, offset: -60}); }
+      if (d) { e.preventDefault(); lenis.scrollTo(d, {duration: 1.4}); }
     }));
   }
 
+  const obra = document.getElementById('obra');
   const fotos = gsap.utils.toArray('.obra__foto');
   const etapas = gsap.utils.toArray('.etapa');
   const hitos = gsap.utils.toArray('.obra__linea li');
+  const nivel = document.querySelector('.nivel');
+  const nivelTexto = document.querySelector('[data-nivel]');
   const pasos = fotos.length - 1;
+  // altura de la casa en la foto: el piso está al 26% desde abajo y el techo al 77%
+  const PISO = 26, TECHO = 77, ALTURA_M = 7.2;
+  const cota = sube => {
+    const m = Math.max(0, Math.min(1, (sube - PISO) / (TECHO - PISO))) * ALTURA_M;
+    return m < .005 ? 'Nivel ±0,00 m' : 'Nivel +' + m.toFixed(2).replace('.', ',') + ' m';
+  };
 
-  // entrada: el plano se dibuja desde el azul
-  gsap.from(fotos[0].querySelector('img'), {scale: 1.12, filter: 'brightness(.3) saturate(.6)', duration: 2.2, ease: 'power3.out'});
-  gsap.from(etapas[0].children, {opacity: 0, y: 24, duration: 1, stagger: .12, delay: .5, ease: 'power2.out'});
+  // entrada: el plano aparece desde lo oscuro
+  gsap.from(fotos[0].querySelector('img'), {scale: 1.14, filter: 'brightness(.25) saturate(.5)', duration: 2.4, ease: 'power3.out'});
+  gsap.from(etapas[0].children, {opacity: 0, y: 26, duration: 1, stagger: .12, delay: .5, ease: 'power2.out'});
 
-  // cada etapa: la foto nueva aparece y se acerca, el texto cambia y avanza la línea de obra
-  const tl = gsap.timeline({scrollTrigger: {trigger: obra, start: 'top top', end: 'bottom bottom', scrub: .8,
+  const tl = gsap.timeline({scrollTrigger: {trigger: obra, start: 'top top', end: 'bottom bottom', scrub: .6,
     onUpdate: s => {
       const n = Math.min(5, Math.floor(s.progress * pasos * 1.0001));
       hitos.forEach((h, i) => h.classList.toggle('hecha', i <= n));
       gsap.set('.obra__avance', {scaleX: Math.min(1, s.progress * pasos / 5)});
     }}});
-  fotos.forEach((f, i) => gsap.set(f.querySelector('img'), {scale: 1.06}));
+
   for (let i = 1; i <= pasos; i++) {
-    tl.to(fotos[i], {opacity: 1, duration: .6, ease: 'none'}, i - 1 + .3)
-      .fromTo(fotos[i].querySelector('img'), {scale: 1.08}, {scale: 1, duration: 1, ease: 'none'}, i - 1 + .3)
-      .to(etapas[i - 1], {opacity: 0, y: -20, duration: .25}, i - 1 + .3)
-      .fromTo(etapas[i], {opacity: 0, y: 24}, {opacity: 1, y: 0, duration: .35}, i - 1 + .62);
+    const foto = fotos[i], img = foto.querySelector('img'), t = i - 1;
+    const esNoche = i === pasos;
+    if (esNoche) {
+      // la última no se construye: se encienden las luces
+      tl.fromTo(foto, {'--sube': 110, opacity: 0}, {opacity: 1, duration: .7, ease: 'none'}, t + .2);
+    } else {
+      // la etapa nueva se levanta desde el piso, con el nivel láser marcando la altura
+      tl.fromTo(foto, {'--sube': -4}, {'--sube': 106, duration: .78, ease: 'none',
+          onUpdate: function(){ const v = parseFloat(gsap.getProperty(foto, '--sube')); nivel.style.height = Math.max(0, Math.min(100, v)) + '%'; nivelTexto.textContent = cota(v); }}, t + .14)
+        .fromTo(nivel, {opacity: 0}, {opacity: 1, duration: .06}, t + .14)
+        .to(nivel, {opacity: 0, duration: .08}, t + .86);
+    }
+    // la cámara se acerca apenas mientras la obra avanza
+    tl.fromTo(img, {scale: 1.05}, {scale: 1, duration: 1, ease: 'none'}, t)
+      .to(etapas[i - 1], {opacity: 0, y: -22, duration: .2}, t + .12)
+      .fromTo(etapas[i], {opacity: 0, y: 26}, {opacity: 1, y: 0, duration: .3}, t + .62);
   }
-  tl.to({}, {duration: .4});
+  tl.to({}, {duration: .35});
   gsap.to('.obra__aviso', {opacity: 0, scrollTrigger: {trigger: obra, start: 'top top', end: '+=300', scrub: true}});
+
+  /* títulos que suben al entrar (una sola vez) */
+  document.querySelectorAll('.revela > span').forEach(s =>
+    gsap.from(s, {yPercent: 105, duration: 1, ease: 'power4.out', scrollTrigger: {trigger: s.parentNode, start: 'top 85%'}}));
+
+  /* cajetín: las filas se completan como si se escribiera el plano */
+  gsap.from('.plano dt, .plano dd', {opacity: 0, x: -10, duration: .5, stagger: .05, ease: 'power2.out', scrollTrigger: {trigger: '.plano', start: 'top 75%'}});
+
+  /* modelos: la foto se descubre y la planta se dibuja */
+  document.querySelectorAll('.modelo').forEach(m => {
+    const desde = m.matches(':nth-child(odd)') ? 'inset(0 0 0 100%)' : 'inset(0 100% 0 0)';
+    gsap.fromTo(m.querySelector('.modelo__foto'), {clipPath: desde}, {clipPath: 'inset(0 0% 0 0%)', duration: 1.2, ease: 'power3.inOut', scrollTrigger: {trigger: m, start: 'top 75%'}});
+    gsap.fromTo(m.querySelector('.modelo__foto img'), {scale: 1.15}, {scale: 1, duration: 1.6, ease: 'power3.out', scrollTrigger: {trigger: m, start: 'top 75%'}});
+    const trazos = m.querySelectorAll('.planta rect, .planta line, .planta path');
+    trazos.forEach(p => { const l = p.getTotalLength ? p.getTotalLength() : 600; p.style.strokeDasharray = l; p.style.strokeDashoffset = l; });
+    gsap.to(trazos, {strokeDashoffset: 0, duration: 1.4, stagger: .06, ease: 'power2.inOut', scrollTrigger: {trigger: m.querySelector('.planta'), start: 'top 85%'}});
+    gsap.from(m.querySelectorAll('.planta text'), {opacity: 0, duration: .6, stagger: .05, delay: .9, scrollTrigger: {trigger: m.querySelector('.planta'), start: 'top 85%'}});
+  });
+
+  /* método: la línea de tiempo se recorre */
+  gsap.from('.pasos li', {opacity: 0, y: 30, duration: .7, stagger: .12, ease: 'power2.out', scrollTrigger: {trigger: '.pasos', start: 'top 80%'}});
 
   addEventListener('load', () => ScrollTrigger.refresh());
 })();
