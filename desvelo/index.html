@@ -280,6 +280,7 @@ const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const anima = !!window.gsap && !quieto;
 
 /* ---------- el riel ---------- */
+let entradaLista = !anima;
 const contenedor = document.getElementById('prendas');
 const gancho = `<svg class="prenda__gancho" viewBox="0 0 100 40" aria-hidden="true"><path d="M50 22V9a6 6 0 1 1 6 6" fill="none" stroke="#9a9a9e" stroke-width="2.4" stroke-linecap="round"/><path d="M50 22 6 36h88z" fill="none" stroke="#b08a5a" stroke-width="5" stroke-linejoin="round"/></svg>`;
 PRENDAS.forEach((p, i) => {
@@ -290,7 +291,8 @@ PRENDAS.forEach((p, i) => {
   b.innerHTML = `${p.gancho ? gancho : ''}<img src="${p.colores[0].img}" alt=""><span class="prenda__nombre">${p.nombre}, ${pesos(p.precio)}</span>`;
   b.addEventListener('click', () => abrir(i, b));
   if (anima) {
-    b.addEventListener('mouseenter', () => gsap.fromTo(b, {rotation: 0}, {keyframes: {rotation: [3.5, -2.2, 1.2, -.5, 0]}, duration: 1.6, ease: 'none', overwrite: true}));
+    // el balanceo al pasar el mouse espera a que termine la entrada y solo pisa la rotación, nunca la caída
+    b.addEventListener('mouseenter', () => { if (entradaLista) gsap.to(b, {keyframes: {rotation: [3.5, -2.2, 1.2, -.5, 0]}, duration: 1.6, ease: 'none', overwrite: 'auto'}); });
   }
   contenedor.append(b);
 });
@@ -300,7 +302,7 @@ if (anima) {
   const prendas = gsap.utils.toArray('.prenda');
   gsap.set(prendas, {y: -innerHeight * .9, rotation: () => gsap.utils.random(-14, 14)});
   gsap.set('.riel__barra', {scaleX: 0, transformOrigin: 'left'});
-  gsap.timeline({delay: .2})
+  gsap.timeline({delay: .2, onComplete: () => { entradaLista = true; gsap.set(prendas, {y: 0}); }})
     .to('.riel__barra', {scaleX: 1, duration: .9, ease: 'power3.inOut'})
     .to(prendas, {y: 0, duration: .9, ease: 'power3.in', stagger: {each: .09, from: 'center'}}, .5)
     .to(prendas, {keyframes: {rotation: [7, -4, 2, -1, 0]}, duration: 1.8, ease: 'none', stagger: {each: .09, from: 'center'}}, 1.35)
