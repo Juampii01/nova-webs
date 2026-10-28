@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Desvelo Drop 09</title>
+<meta name="description" content="Desvelo, ropa de tiradas cortas. Drop 09: seis prendas, una sola tirada.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
+<style>
+/* Desvelo: la tienda es un riel de ropa sobre blanco. Las fotos tienen fondo blanco y se funden con la página.
+   El azul cobalto sale de las mangas de la campera de la colección. Una sola familia (Archivo) jugando con el ancho. */
+:root{
+  --blanco:#ffffff;
+  --tinta:#17171a;
+  --gris:#7d7d82;
+  --linea:#e4e4e6;
+  --cobalto:#2340ff;
+  --fuente:"Archivo", "Helvetica Neue", Arial, sans-serif;
+  --margen:max(16px, 3vw);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--blanco)}
+body{background:var(--blanco);color:var(--tinta);font-family:var(--fuente);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--cobalto);outline-offset:3px}
+.ancho{font-variation-settings:"wdth" 125}
+.angosto{font-variation-settings:"wdth" 70}
+
+/* barra */
+.barra{position:sticky;top:0;z-index:40;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:16px max(var(--margen),env(safe-area-inset-left,0px));background:var(--blanco)}
+.logo{font-weight:900;font-size:20px;letter-spacing:.02em;font-variation-settings:"wdth" 125;text-decoration:none}
+.barra__drop{font-size:14px;color:var(--gris);text-align:center}
+.barra__drop b{color:var(--tinta);font-weight:600}
+.pedido-boton{justify-self:end;font-size:14px;font-weight:600;padding:8px 0}
+.pedido-boton span{display:inline-grid;place-items:center;min-width:22px;height:22px;margin-left:6px;padding:0 6px;border-radius:11px;background:var(--tinta);color:var(--blanco);font-size:12px;font-variant-numeric:tabular-nums}
+
+/* el riel */
+.tienda{position:relative;padding-top:clamp(24px,5vh,56px)}
+.riel{--alto:min(58vh, calc((100vw - 2 * var(--margen)) / 3.6));position:relative;transition:filter .5s, opacity .5s}
+.riel__barra{position:absolute;left:0;right:0;top:calc(var(--alto) * .035);height:3px;background:linear-gradient(#c9c9cc,#9a9a9e 60%,#c9c9cc);z-index:2;box-shadow:0 2px 3px rgba(0,0,0,.08)}
+.riel__prendas{display:flex;justify-content:safe center;align-items:flex-start;padding:0 var(--margen);height:calc(var(--alto) + 40px);overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.riel__prendas::-webkit-scrollbar{display:none}
+.prenda{position:relative;flex:none;height:var(--alto);aspect-ratio:3/4;margin:0 calc(var(--alto) * -.09);transform-origin:50% 3.5%;z-index:3}
+.prenda:hover,.prenda:focus-visible{z-index:6!important}
+.prenda img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;pointer-events:none}
+.prenda__gancho{position:absolute;left:50%;top:0;width:34%;translate:-50% 0;height:auto;z-index:1}
+.prenda__nombre{position:absolute;left:50%;bottom:-30px;translate:-50% 0;white-space:nowrap;font-size:13px;color:var(--gris);opacity:0;transition:opacity .25s}
+.prenda:hover .prenda__nombre,.prenda:focus-visible .prenda__nombre{opacity:1}
+.riel.atras{filter:blur(14px);opacity:.35;pointer-events:none}
+
+/* debajo del riel */
+.portada__texto{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px 48px;align-items:end;padding:clamp(32px,6vh,72px) var(--margen) clamp(56px,10vh,110px)}
+.portada__texto h1{font-weight:800;font-size:clamp(40px,5.6vw,96px);line-height:.9;letter-spacing:-.02em;font-variation-settings:"wdth" 125}
+.portada__texto p{max-width:40ch;color:var(--gris)}
+.portada__texto p b{color:var(--tinta);font-weight:600}
+
+/* detalle de prenda */
+.detalle{position:fixed;inset:0;z-index:30;display:none;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr) minmax(0,1fr);align-items:center;gap:24px;padding:72px var(--margen) 32px}
+.detalle.abierto{display:grid}
+.detalle__foto{position:relative;height:min(74vh,720px);aspect-ratio:3/4;justify-self:center}
+.detalle__foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.etiquetas{position:absolute;right:-14%;top:9%;display:flex;gap:8px;transform-origin:50% 0}
+.etiqueta{width:58px;padding:18px 6px 10px;background:var(--tinta);color:var(--blanco);font-size:10px;line-height:1.2;text-align:center;border-radius:3px;position:relative;transform-origin:50% -20px}
+.etiqueta::before{content:"";position:absolute;left:50%;top:6px;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--blanco)}
+.etiqueta::after{content:"";position:absolute;left:50%;top:-22px;width:1px;height:26px;background:var(--gris)}
+.etiqueta--clara{background:#d9c9ae;color:var(--tinta)}
+.etiqueta b{display:block;font-size:13px;font-weight:800;margin-top:4px;font-variation-settings:"wdth" 110}
+.detalle__info{display:flex;flex-direction:column;gap:18px;max-width:380px}
+.detalle__info h2{font-weight:800;font-size:clamp(28px,2.8vw,44px);line-height:.95;letter-spacing:-.01em;font-variation-settings:"wdth" 118}
+.detalle__precio{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.detalle__desc{color:var(--gris);font-size:15px}
+.grupo{display:flex;flex-direction:column;gap:8px}
+.grupo__titulo{font-size:13px;color:var(--gris)}
+.opciones{display:flex;flex-wrap:wrap;gap:6px}
+.opciones button{min-width:44px;height:40px;padding:0 14px;border:1px solid var(--linea);border-radius:20px;font-size:14px;font-variant-numeric:tabular-nums}
+.opciones button[aria-pressed="true"]{border-color:var(--tinta);background:var(--tinta);color:var(--blanco)}
+.opciones button:disabled{opacity:.35;cursor:not-allowed;text-decoration:line-through}
+.color{width:40px;min-width:40px!important;padding:0!important;display:grid;place-items:center}
+.color i{width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.color[aria-pressed="true"]{background:var(--blanco)!important;box-shadow:0 0 0 2px var(--tinta)}
+.sumar{height:52px;background:var(--cobalto);color:var(--blanco);border-radius:26px;font-weight:700;font-size:15px;font-variation-settings:"wdth" 112;transition:background .2s}
+.sumar:hover{background:var(--tinta)}
+.aviso{font-size:13px;color:var(--gris);min-height:1.2em}
+.detalle__lado{display:flex;flex-direction:column;align-items:flex-end;gap:14px;align-self:stretch;justify-content:space-between}
+.cerrar{font-size:14px;font-weight:600;padding:10px 0;border-bottom:1px solid currentColor}
+.cara{display:flex;border:1px solid var(--linea);border-radius:20px;padding:3px}
+.cara button{padding:7px 16px;border-radius:16px;font-size:13px}
+.cara button[aria-pressed="true"]{background:var(--tinta);color:var(--blanco)}
+.cara button:disabled{opacity:.35;cursor:not-allowed}
+.flechas{display:flex;gap:8px}
+.flechas button{width:48px;height:48px;border:1px solid var(--linea);border-radius:50%;display:grid;place-items:center}
+.flechas button:hover{border-color:var(--tinta)}
+.detalle__cuenta{font-size:13px;color:var(--gris);font-variant-numeric:tabular-nums}
+
+/* talles */
+.talles{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:32px 64px;padding:clamp(72px,12vh,140px) var(--margen);border-top:1px solid var(--linea)}
+.talles h2,.envios h2{font-weight:800;font-size:clamp(30px,3.6vw,56px);line-height:.92;letter-spacing:-.01em;font-variation-settings:"wdth" 125}
+.talles p{color:var(--gris);margin-top:16px;max-width:36ch}
+.tabla-caja{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:15px;min-width:420px}
+th,td{text-align:left;padding:14px 12px 14px 0;border-bottom:1px solid var(--linea)}
+th{font-weight:600;font-size:13px;color:var(--gris)}
+td:first-child{font-weight:700;font-variation-settings:"wdth" 118}
+
+.envios{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:32px 64px;padding:0 var(--margen) clamp(72px,12vh,140px)}
+.envios dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px}
+.envios dt{font-weight:700;margin-bottom:6px;font-variation-settings:"wdth" 112}
+.envios dd{color:var(--gris);font-size:15px}
+
+/* banda inferior: cuenta regresiva al próximo drop */
+.banda{background:var(--cobalto);color:var(--blanco);padding:clamp(48px,9vh,96px) var(--margen) 28px;overflow:hidden}
+.banda__fila{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.banda__titulo{font-size:15px;opacity:.8}
+.cuenta{font-weight:900;font-size:clamp(56px,12.5vw,210px);line-height:.85;letter-spacing:-.03em;font-variation-settings:"wdth" 125;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cuenta small{font-size:.22em;font-weight:600;letter-spacing:0;margin:0 .35em 0 .08em;font-variation-settings:"wdth" 100;vertical-align:.3em}
+.banda__pie{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:48px;padding-top:18px;border-top:1px solid rgba(255,255,255,.3);font-size:13px;opacity:.85}
+
+/* pedido */
+.pedido{position:fixed;top:0;right:0;bottom:0;z-index:60;width:min(420px,100vw);background:var(--blanco);box-shadow:-20px 0 60px rgba(0,0,0,.12);padding:24px;display:flex;flex-direction:column;gap:16px;translate:105% 0;transition:translate .45s cubic-bezier(.2,.7,.2,1)}
+.pedido.abierto{translate:0 0}
+.pedido__cabeza{display:flex;justify-content:space-between;align-items:center}
+.pedido__cabeza h2{font-weight:800;font-size:24px;font-variation-settings:"wdth" 118}
+.pedido ul{list-style:none;flex:1;overflow:auto;display:flex;flex-direction:column;gap:12px}
+.pedido li{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;font-size:14px}
+.pedido li img{width:64px;aspect-ratio:3/4;object-fit:contain;mix-blend-mode:multiply;background:#fafafa}
+.pedido li small{display:block;color:var(--gris)}
+.pedido li button{font-size:13px;color:var(--gris);text-decoration:underline}
+.pedido__total{display:flex;justify-content:space-between;font-weight:700;font-size:17px;border-top:1px solid var(--linea);padding-top:14px;font-variant-numeric:tabular-nums}
+.pedido__vacio{color:var(--gris);font-size:15px}
+.pedido .sumar{display:grid;place-items:center;text-decoration:none}
+
+@media (max-width:900px){
+  .barra__drop{display:none}
+  .barra{grid-template-columns:1fr auto}
+  .riel{--alto:min(52vh,460px)}
+  .riel__prendas{justify-content:flex-start;scroll-snap-type:x mandatory}
+  .prenda{scroll-snap-align:center}
+  .portada__texto,.talles,.envios{grid-template-columns:1fr}
+  .envios dl{grid-template-columns:1fr}
+  .detalle{grid-template-columns:1fr;align-content:start;overflow:auto;padding-top:64px;background:var(--blanco)}
+  .detalle__foto{height:52vh}
+  .detalle__lado{flex-direction:row;align-items:center;order:-1}
+  .detalle__info{order:1}
+  .cerrar{white-space:nowrap}
+  .etiquetas{right:-4%}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="barra">
+  <a class="logo" href="./">DESVELO</a>
+  <p class="barra__drop"><b>Drop 09</b> salió el viernes a las 00:00</p>
+  <button class="pedido-boton" type="button" id="abrir-pedido" aria-controls="pedido">Pedido<span data-cantidad>0</span></button>
+</header>
+
+<main>
+  <section class="tienda" aria-label="Drop 09">
+    <div class="riel" id="riel">
+      <div class="riel__prendas" id="prendas" role="list"></div>
+      <div class="riel__barra" aria-hidden="true"></div>
+    </div>
+
+    <div class="portada__texto">
+      <h1>Seis prendas.<br>Una sola tirada.</h1>
+      <p><b>Tocá una prenda para verla de cerca.</b> Cada drop sale un viernes a la medianoche y no se repite: cuando un talle se agota, no vuelve.</p>
+    </div>
+  </section>
+
+  <section class="talles" aria-labelledby="talles-titulo">
+    <div>
+      <h2 id="talles-titulo">Guía de talles</h2>
+      <p>Medidas de la prenda apoyada en una mesa, en centímetros. Todo el drop tiene calce amplio: si dudás, pedí tu talle de siempre.</p>
+    </div>
+    <div class="tabla-caja">
+      <table>
+        <thead><tr><th>Talle</th><th>Ancho de pecho</th><th>Largo total</th><th>Manga</th></tr></thead>
+        <tbody>
+          <tr><td>S</td><td>56</td><td>70</td><td>22</td></tr>
+          <tr><td>M</td><td>59</td><td>72</td><td>23</td></tr>
+          <tr><td>L</td><td>62</td><td>74</td><td>24</td></tr>
+          <tr><td>XL</td><td>65</td><td>76</td><td>25</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="envios" aria-labelledby="envios-titulo">
+    <h2 id="envios-titulo">Cómo comprar</h2>
+    <dl>
+      <div><dt>Pedido por WhatsApp</dt><dd>Armás el pedido acá y lo mandás por WhatsApp. Te confirmamos stock en el momento.</dd></div>
+      <div><dt>Envíos</dt><dd>A todo el país por correo. En CABA, moto en el día si pedís antes de las 14.</dd></div>
+      <div><dt>Cambios</dt><dd>Hasta 15 días desde que te llega, con la prenda sin usar y con sus etiquetas.</dd></div>
+    </dl>
+  </section>
+</main>
+
+<footer class="banda" aria-labelledby="proximo">
+  <p class="banda__titulo" id="proximo">El próximo drop sale en</p>
+  <div class="banda__fila">
+    <p class="cuenta" data-cuenta aria-live="off">0<small>d</small>00<small>h</small>00<small>m</small>00<small>s</small></p>
+  </div>
+  <div class="banda__pie"><span>Desvelo. Ropa de tiradas cortas.</span><span>Marca inventada para una muestra de Nova Webs.</span></div>
+</footer>
+
+<div class="detalle" id="detalle" role="dialog" aria-modal="true" aria-labelledby="detalle-nombre">
+  <div class="detalle__info">
+    <p class="detalle__cuenta" data-posicion></p>
+    <h2 id="detalle-nombre"></h2>
+    <p class="detalle__precio" data-precio></p>
+    <p class="detalle__desc" data-desc></p>
+    <div class="grupo"><span class="grupo__titulo" data-color-nombre></span><div class="opciones" data-colores></div></div>
+    <div class="grupo"><span class="grupo__titulo">Talle</span><div class="opciones" data-talles></div></div>
+    <button class="sumar" type="button" data-sumar>Sumar al pedido</button>
+    <p class="aviso" role="status" data-aviso></p>
+  </div>
+  <div class="detalle__foto" data-foto>
+    <img alt="" data-img>
+    <div class="etiquetas" aria-hidden="true">
+      <div class="etiqueta">DESVELO<b data-etiqueta-drop>09</b></div>
+      <div class="etiqueta etiqueta--clara">PRECIO<b data-etiqueta-precio></b></div>
+    </div>
+  </div>
+  <div class="detalle__lado">
+    <button class="cerrar" type="button" data-cerrar>Volver al riel</button>
+    <div class="cara" role="group" aria-label="Lado de la prenda">
+      <button type="button" data-cara="frente" aria-pressed="true">Frente</button>
+      <button type="button" data-cara="espalda" aria-pressed="false">Espalda</button>
+    </div>
+    <div class="flechas">
+      <button type="button" data-mover="-1" aria-label="Prenda anterior"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M11 3 5 9l6 6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+      <button type="button" data-mover="1" aria-label="Prenda siguiente"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="m7 3 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<aside class="pedido" id="pedido" aria-labelledby="pedido-titulo" aria-hidden="true">
+  <div class="pedido__cabeza"><h2 id="pedido-titulo">Tu pedido</h2><button class="cerrar" type="button" data-cerrar-pedido>Cerrar</button></div>
+  <ul data-lista></ul>
+  <p class="pedido__vacio" data-vacio>Todavía no sumaste nada. Tocá una prenda del riel para elegir color y talle.</p>
+  <div class="pedido__total"><span>Total</span><span data-total>$ 0</span></div>
+  <a class="sumar" data-whatsapp target="_blank" rel="noopener">Mandar el pedido por WhatsApp</a>
+</aside>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+// Número de WhatsApp de la tienda (solo dígitos, con código de país).
+const WHATSAPP = '5490000000000';
+
+const PRENDAS = [
+  {id:'desvelo', nombre:'Musculosa Desvelo', precio:38000,
+   desc:'Algodón pesado de 240 g, lavado a la piedra y pintado a mano. Cada una tiene las manchas en otro lugar.',
+   colores:[{nombre:'Grafito', hex:'#4a4a4c', img:'img/desvelo-gris.jpg'},{nombre:'Hueso', hex:'#ddd3c0', img:'img/desvelo-hueso.jpg'},{nombre:'Negro lavado', hex:'#1d1d1f', img:'img/desvelo-negro.jpg'}],
+   espalda:{Grafito:'img/desvelo-espalda.jpg'}},
+  {id:'luna', nombre:'Remera Luna', precio:32000, desc:'Corte cuadrado y amplio, celeste lavado. La luna va bordada, no estampada.',
+   colores:[{nombre:'Celeste lavado', hex:'#8fb3d9', img:'img/luna.jpg'}]},
+  {id:'varsity', nombre:'Campera Varsity', precio:96000, desc:'Cuerpo de paño de lana, mangas de cuero ecológico cobalto y luna de felpa aplicada.',
+   colores:[{nombre:'Crudo y cobalto', hex:'#2340ff', img:'img/varsity.jpg'}]},
+  {id:'camiseta', nombre:'Camiseta 9', precio:41000, desc:'Camiseta de fútbol de los noventa, en naranja quemado con zigzag negro en los hombros.',
+   colores:[{nombre:'Naranja quemado', hex:'#e2621b', img:'img/camiseta.jpg'}]},
+  {id:'buzo', nombre:'Buzo Oliva', precio:58000, desc:'Frisa pesada lavada al sol, ruedo cortado a mano y bolsillo canguro.',
+   colores:[{nombre:'Oliva', hex:'#6b7350', img:'img/buzo.jpg'}]},
+  {id:'bowling', nombre:'Camisa Bowling', precio:45000, desc:'Rayón liviano, cuello abierto y dos paneles negros al frente.',
+   colores:[{nombre:'Crudo y negro', hex:'#efe9db', img:'img/bowling.jpg'}]},
+];
+const TALLES = ['S','M','L','XL'];
+const AGOTADOS = {varsity:['S'], camiseta:['XL']};   // talles agotados del drop
+
+const pesos = n => '$ ' + n.toLocaleString('es-AR');
+const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const anima = !!window.gsap && !quieto;
+
+/* ---------- el riel ---------- */
+const contenedor = document.getElementById('prendas');
+const gancho = `<svg class="prenda__gancho" viewBox="0 0 100 40" aria-hidden="true"><path d="M50 22V9a6 6 0 1 1 6 6" fill="none" stroke="#9a9a9e" stroke-width="2.4" stroke-linecap="round"/><path d="M50 22 6 36h88z" fill="none" stroke="#b08a5a" stroke-width="5" stroke-linejoin="round"/></svg>`;
+PRENDAS.forEach((p, i) => {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'prenda'; b.setAttribute('role','listitem');
+  b.dataset.i = i; b.style.zIndex = 3 + (i % 2);
+  b.setAttribute('aria-label', `${p.nombre}, ${pesos(p.precio)}`);
+  b.innerHTML = `${p.gancho ? gancho : ''}<img src="${p.colores[0].img}" alt=""><span class="prenda__nombre">${p.nombre}, ${pesos(p.precio)}</span>`;
+  b.addEventListener('click', () => abrir(i, b));
+  if (anima) {
+    b.addEventListener('mouseenter', () => gsap.fromTo(b, {rotation: 0}, {keyframes: {rotation: [3.5, -2.2, 1.2, -.5, 0]}, duration: 1.6, ease: 'none', overwrite: true}));
+  }
+  contenedor.append(b);
+});
+
+/* entrada: las prendas caen sobre el riel y se balancean (una sola vez) */
+if (anima) {
+  const prendas = gsap.utils.toArray('.prenda');
+  gsap.set(prendas, {y: -innerHeight * .9, rotation: () => gsap.utils.random(-14, 14)});
+  gsap.set('.riel__barra', {scaleX: 0, transformOrigin: 'left'});
+  gsap.timeline({delay: .2})
+    .to('.riel__barra', {scaleX: 1, duration: .9, ease: 'power3.inOut'})
+    .to(prendas, {y: 0, duration: .9, ease: 'power3.in', stagger: {each: .09, from: 'center'}}, .5)
+    .to(prendas, {keyframes: {rotation: [7, -4, 2, -1, 0]}, duration: 1.8, ease: 'none', stagger: {each: .09, from: 'center'}}, 1.35)
+    .from('.portada__texto > *', {opacity: 0, y: 20, duration: .8, stagger: .12, ease: 'power2.out'}, 1.6);
+}
+
+/* ---------- detalle ---------- */
+const detalle = document.getElementById('detalle');
+const riel = document.getElementById('riel');
+const $d = s => detalle.querySelector(s);
+const foto = $d('[data-img]');
+let actual = -1, color = 0, cara = 'frente', talle = null, origen = null;
+
+function pintar(){
+  const p = PRENDAS[actual], c = p.colores[color];
+  $d('#detalle-nombre').textContent = p.nombre;
+  $d('[data-precio]').textContent = pesos(p.precio);
+  $d('[data-etiqueta-precio]').textContent = (p.precio / 1000) + 'K';
+  $d('[data-desc]').textContent = p.desc;
+  $d('[data-posicion]').textContent = `${actual + 1} de ${PRENDAS.length}`;
+  $d('[data-color-nombre]').textContent = `Color: ${c.nombre}`;
+  const espalda = p.espalda && p.espalda[c.nombre];
+  if (cara === 'espalda' && !espalda) cara = 'frente';
+  foto.src = cara === 'espalda' ? espalda : c.img;
+  foto.alt = `${p.nombre}, ${c.nombre}, ${cara}`;
+  detalle.querySelectorAll('[data-cara]').forEach(b => {
+    b.setAttribute('aria-pressed', b.dataset.cara === cara);
+    if (b.dataset.cara === 'espalda') b.disabled = !espalda;
+  });
+  $d('[data-colores]').innerHTML = p.colores.map((k, i) =>
+    `<button type="button" class="color" aria-pressed="${i === color}" aria-label="${k.nombre}" data-color="${i}"><i style="background:${k.hex}"></i></button>`).join('');
+  $d('[data-talles]').innerHTML = TALLES.map(t => {
+    const ag = (AGOTADOS[p.id] || []).includes(t);
+    return `<button type="button" aria-pressed="${t === talle}" data-talle="${t}" ${ag ? 'disabled aria-label="' + t + ', agotado"' : ''}>${t}</button>`;
+  }).join('');
+  $d('[data-aviso]').textContent = '';
+}
+
+function abrir(i, desde){
+  actual = i; color = 0; cara = 'frente'; talle = null; origen = desde;
+  pintar();
+  detalle.classList.add('abierto');
+  riel.classList.add('atras');
+  document.querySelector('.portada__texto').style.visibility = 'hidden';
+  document.body.style.overflow = 'hidden';
+  $d('[data-cerrar]').focus({preventScroll: true});
+  if (!anima || !desde) return;
+  // la prenda vuela desde el riel hasta el centro
+  const a = desde.getBoundingClientRect(), b = $d('[data-foto]').getBoundingClientRect();
+  gsap.fromTo('[data-foto]', {x: a.left - b.left + (a.width - b.width) / 2, y: a.top - b.top + (a.height - b.height) / 2, scale: a.height / b.height},
+    {x: 0, y: 0, scale: 1, duration: .8, ease: 'power3.inOut'});
+  gsap.fromTo('.detalle__info > *, .detalle__lado > *', {opacity: 0, y: 14}, {opacity: 1, y: 0, duration: .5, stagger: .04, delay: .45, ease: 'power2.out'});
+  gsap.fromTo('.etiqueta', {rotation: -40, opacity: 0}, {rotation: 0, opacity: 1, duration: 1.4, stagger: .12, delay: .6, ease: 'elastic.out(1, .35)'});
+}
+
+function cerrar(){
+  const volver = () => {
+    detalle.classList.remove('abierto');
+    riel.classList.remove('atras');
+    document.querySelector('.portada__texto').style.visibility = '';
+    document.body.style.overflow = '';
+    gsap?.set('[data-foto]', {clearProps: 'all'});
+    if (origen) origen.focus({preventScroll: true});
+    actual = -1;
+  };
+  if (!anima || !origen) return volver();
+  const a = origen.getBoundingClientRect(), b = $d('[data-foto]').getBoundingClientRect();
+  gsap.to('.detalle__info > *, .detalle__lado > *, .etiqueta', {opacity: 0, duration: .2});
+  gsap.to('[data-foto]', {x: a.left - b.left + (a.width - b.width) / 2, y: a.top - b.top + (a.height - b.height) / 2, scale: a.height / b.height,
+    duration: .6, ease: 'power3.inOut', onComplete: volver});
+  riel.classList.remove('atras');
+}
+
+function mover(paso){
+  const i = (actual + paso + PRENDAS.length) % PRENDAS.length;
+  const siguiente = () => { actual = i; color = 0; cara = 'frente'; talle = null; origen = contenedor.children[i]; pintar(); };
+  if (!anima) return siguiente();
+  gsap.timeline()
+    .to('[data-foto]', {xPercent: -40 * paso, opacity: 0, duration: .25, ease: 'power2.in'})
+    .add(siguiente)
+    .fromTo('[data-foto]', {xPercent: 40 * paso, opacity: 0}, {xPercent: 0, opacity: 1, duration: .45, ease: 'power3.out'})
+    .fromTo('.etiqueta', {rotation: -25}, {rotation: 0, duration: 1.2, stagger: .1, ease: 'elastic.out(1, .35)'}, '<');
+}
+
+/* cambiar de color o girar la prenda */
+function cambiarFoto(accion){
+  if (!anima) { accion(); return pintar(); }
+  gsap.timeline()
+    .to('[data-img]', {rotationY: 90, duration: .22, ease: 'power2.in'})
+    .add(() => { accion(); pintar(); })
+    .fromTo('[data-img]', {rotationY: -90}, {rotationY: 0, duration: .35, ease: 'power2.out'});
+}
+
+detalle.addEventListener('click', e => {
+  const t = e.target.closest('button'); if (!t || t.disabled) return;
+  if (t.dataset.color) cambiarFoto(() => { color = +t.dataset.color; });
+  else if (t.dataset.cara && t.dataset.cara !== cara) cambiarFoto(() => { cara = t.dataset.cara; });
+  else if (t.dataset.talle) { talle = t.dataset.talle; pintar(); }
+  else if (t.dataset.mover) mover(+t.dataset.mover);
+  else if ('cerrar' in t.dataset) cerrar();
+  else if ('sumar' in t.dataset) sumar();
+});
+addEventListener('keydown', e => {
+  if (actual < 0) return;
+  if (e.key === 'Escape') cerrar();
+  if (e.key === 'ArrowRight') mover(1);
+  if (e.key === 'ArrowLeft') mover(-1);
+});
+
+/* ---------- pedido ---------- */
+const pedido = [];
+const panel = document.getElementById('pedido');
+function sumar(){
+  if (!talle) { $d('[data-aviso]').textContent = 'Elegí un talle para sumarla al pedido.'; return; }
+  const p = PRENDAS[actual], c = p.colores[color];
+  pedido.push({nombre: p.nombre, color: c.nombre, talle, precio: p.precio, img: c.img});
+  $d('[data-aviso]').textContent = `Sumaste ${p.nombre} talle ${talle}.`;
+  pintarPedido();
+  if (anima) gsap.fromTo('[data-cantidad]', {scale: 1.6}, {scale: 1, duration: .6, ease: 'elastic.out(1,.4)'});
+}
+function pintarPedido(){
+  document.querySelector('[data-cantidad]').textContent = pedido.length;
+  panel.querySelector('[data-lista]').innerHTML = pedido.map((x, i) =>
+    `<li><img src="${x.img}" alt=""><span>${x.nombre}<small>${x.color}, talle ${x.talle}</small></span><span>${pesos(x.precio)}<br><button type="button" data-quitar="${i}">Quitar</button></span></li>`).join('');
+  panel.querySelector('[data-vacio]').hidden = pedido.length > 0;
+  const total = pedido.reduce((s, x) => s + x.precio, 0);
+  panel.querySelector('[data-total]').textContent = pesos(total);
+  const texto = 'Hola Desvelo, quiero hacer este pedido del Drop 09:\n' +
+    pedido.map(x => `- ${x.nombre}, ${x.color}, talle ${x.talle} (${pesos(x.precio)})`).join('\n') + `\nTotal: ${pesos(total)}`;
+  const enlace = panel.querySelector('[data-whatsapp]');
+  enlace.href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(texto)}`;
+  enlace.style.pointerEvents = pedido.length ? '' : 'none';
+  enlace.style.opacity = pedido.length ? '' : '.35';
+}
+panel.addEventListener('click', e => {
+  const q = e.target.closest('[data-quitar]');
+  if (q) { pedido.splice(+q.dataset.quitar, 1); pintarPedido(); }
+  if (e.target.closest('[data-cerrar-pedido]')) alternarPedido(false);
+});
+function alternarPedido(abrirlo){
+  panel.classList.toggle('abierto', abrirlo);
+  panel.setAttribute('aria-hidden', !abrirlo);
+  if (abrirlo) panel.querySelector('[data-cerrar-pedido]').focus();
+}
+document.getElementById('abrir-pedido').addEventListener('click', () => alternarPedido(!panel.classList.contains('abierto')));
+pintarPedido();
+
+/* ---------- cuenta regresiva al próximo viernes 00:00 ---------- */
+const cuenta = document.querySelector('[data-cuenta]');
+function proximoDrop(){
+  const d = new Date(); d.setHours(0, 0, 0, 0);
+  let dias = (5 - d.getDay() + 7) % 7; if (dias === 0) dias = 7;
+  d.setDate(d.getDate() + dias); return d;
+}
+function tic(){
+  let s = Math.max(0, Math.floor((proximoDrop() - new Date()) / 1000));
+  const d = Math.floor(s / 86400); s %= 86400;
+  const h = Math.floor(s / 3600); s %= 3600;
+  const m = Math.floor(s / 60); s %= 60;
+  const dos = n => String(n).padStart(2, '0');
+  cuenta.innerHTML = `${d}<small>d</small>${dos(h)}<small>h</small>${dos(m)}<small>m</small>${dos(s)}<small>s</small>`;
+  cuenta.setAttribute('aria-label', `${d} días, ${h} horas y ${m} minutos`);
+}
+tic(); setInterval(tic, 1000);
+</script>
+</body>
+</html>
