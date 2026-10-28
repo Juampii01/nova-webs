@@ -47,7 +47,7 @@ a{color:inherit}
 .riel__prendas::-webkit-scrollbar{display:none}
 .prenda{position:relative;flex:none;height:var(--alto);aspect-ratio:3/4;margin:0 calc(var(--alto) * -.09);transform-origin:50% 7.4%;z-index:3}
 .prenda:hover,.prenda:focus-visible{z-index:5!important}
-.prenda img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;pointer-events:none}
+.prenda img{width:100%;height:100%;object-fit:contain;pointer-events:none;filter:drop-shadow(0 14px 14px rgba(23,23,26,.14))}
 .prenda__gancho{position:absolute;left:50%;top:0;width:34%;translate:-50% 0;height:auto;z-index:1}
 .prenda__nombre{position:absolute;left:50%;bottom:-30px;translate:-50% 0;white-space:nowrap;font-size:13px;color:var(--gris);opacity:0;transition:opacity .25s}
 .prenda:hover .prenda__nombre,.prenda:focus-visible .prenda__nombre{opacity:1}
@@ -63,7 +63,7 @@ a{color:inherit}
 .detalle{position:fixed;inset:0;z-index:30;display:none;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr) minmax(0,1fr);align-items:center;gap:24px;padding:72px var(--margen) 32px}
 .detalle.abierto{display:grid}
 .detalle__foto{position:relative;height:min(74vh,720px);aspect-ratio:3/4;justify-self:center}
-.detalle__foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.detalle__foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 24px 24px rgba(23,23,26,.16))}
 .etiquetas{position:absolute;right:-14%;top:9%;display:flex;gap:8px;transform-origin:50% 0}
 .etiqueta{width:58px;padding:18px 6px 10px;background:var(--tinta);color:var(--blanco);font-size:10px;line-height:1.2;text-align:center;border-radius:3px;position:relative;transform-origin:50% -20px}
 .etiqueta::before{content:"";position:absolute;left:50%;top:6px;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--blanco)}
@@ -127,7 +127,7 @@ td:first-child{font-weight:700;font-variation-settings:"wdth" 118}
 .pedido__cabeza h2{font-weight:800;font-size:24px;font-variation-settings:"wdth" 118}
 .pedido ul{list-style:none;flex:1;overflow:auto;display:flex;flex-direction:column;gap:12px}
 .pedido li{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;font-size:14px}
-.pedido li img{width:64px;aspect-ratio:3/4;object-fit:contain;mix-blend-mode:multiply;background:#fafafa}
+.pedido li img{width:64px;aspect-ratio:3/4;object-fit:contain;background:#f3f3f4}
 .pedido li small{display:block;color:var(--gris)}
 .pedido li button{font-size:13px;color:var(--gris);text-decoration:underline}
 .pedido__total{display:flex;justify-content:space-between;font-weight:700;font-size:17px;border-top:1px solid var(--linea);padding-top:14px;font-variant-numeric:tabular-nums}
@@ -256,18 +256,18 @@ const WHATSAPP = '5490000000000';
 const PRENDAS = [
   {id:'desvelo', nombre:'Musculosa Desvelo', precio:38000,
    desc:'Algodón pesado de 240 g, lavado a la piedra y pintado a mano. Cada una tiene las manchas en otro lugar.',
-   colores:[{nombre:'Grafito', hex:'#4a4a4c', img:'img/desvelo-gris.jpg'},{nombre:'Hueso', hex:'#ddd3c0', img:'img/desvelo-hueso.jpg'},{nombre:'Negro lavado', hex:'#1d1d1f', img:'img/desvelo-negro.jpg'}],
-   espalda:{Grafito:'img/desvelo-espalda.jpg'}},
+   colores:[{nombre:'Grafito', hex:'#4a4a4c', img:'img/desvelo-gris.webp'},{nombre:'Hueso', hex:'#ddd3c0', img:'img/desvelo-hueso.webp'},{nombre:'Negro lavado', hex:'#1d1d1f', img:'img/desvelo-negro.webp'}],
+   espalda:{Grafito:'img/desvelo-espalda.webp'}},
   {id:'luna', nombre:'Remera Luna', precio:32000, desc:'Corte cuadrado y amplio, celeste lavado. La luna va bordada, no estampada.',
-   colores:[{nombre:'Celeste lavado', hex:'#8fb3d9', img:'img/luna.jpg'}]},
+   colores:[{nombre:'Celeste lavado', hex:'#8fb3d9', img:'img/luna.webp'}]},
   {id:'varsity', nombre:'Campera Varsity', precio:96000, desc:'Cuerpo de paño de lana, mangas de cuero ecológico cobalto y luna de felpa aplicada.',
-   colores:[{nombre:'Crudo y cobalto', hex:'#2340ff', img:'img/varsity.jpg'}]},
+   colores:[{nombre:'Crudo y cobalto', hex:'#2340ff', img:'img/varsity.webp'}]},
   {id:'camiseta', nombre:'Camiseta 9', precio:41000, desc:'Camiseta de fútbol de los noventa, en naranja quemado con zigzag negro en los hombros.',
-   colores:[{nombre:'Naranja quemado', hex:'#e2621b', img:'img/camiseta.jpg'}]},
+   colores:[{nombre:'Naranja quemado', hex:'#e2621b', img:'img/camiseta.webp'}]},
   {id:'buzo', nombre:'Buzo Oliva', precio:58000, desc:'Frisa pesada lavada al sol, ruedo cortado a mano y bolsillo canguro.',
-   colores:[{nombre:'Oliva', hex:'#6b7350', img:'img/buzo.jpg'}]},
+   colores:[{nombre:'Oliva', hex:'#6b7350', img:'img/buzo.webp'}]},
   {id:'bowling', nombre:'Camisa Bowling', precio:45000, desc:'Rayón liviano, cuello abierto y dos paneles negros al frente.',
-   colores:[{nombre:'Crudo y negro', hex:'#efe9db', img:'img/bowling.jpg'}]},
+   colores:[{nombre:'Crudo y negro', hex:'#efe9db', img:'img/bowling.webp'}]},
 ];
 const TALLES = ['S','M','L','XL'];
 const AGOTADOS = {varsity:['S'], camiseta:['XL']};   // talles agotados del drop
