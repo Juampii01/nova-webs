@@ -42,11 +42,11 @@ a{color:inherit}
 /* el riel */
 .tienda{position:relative;padding-top:clamp(24px,5vh,56px)}
 .riel{--alto:min(58vh, calc((100vw - 2 * var(--margen)) / 3.6));position:relative;transition:filter .5s, opacity .5s}
-.riel__barra{position:absolute;left:0;right:0;top:calc(var(--alto) * .035);height:3px;background:linear-gradient(#c9c9cc,#9a9a9e 60%,#c9c9cc);z-index:2;box-shadow:0 2px 3px rgba(0,0,0,.08)}
+.riel__barra{position:absolute;left:0;right:0;top:calc(var(--alto) * .074);height:3px;background:linear-gradient(#c9c9cc,#9a9a9e 60%,#c9c9cc);z-index:8;box-shadow:0 2px 3px rgba(0,0,0,.08);pointer-events:none}
 .riel__prendas{display:flex;justify-content:safe center;align-items:flex-start;padding:0 var(--margen);height:calc(var(--alto) + 40px);overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
 .riel__prendas::-webkit-scrollbar{display:none}
-.prenda{position:relative;flex:none;height:var(--alto);aspect-ratio:3/4;margin:0 calc(var(--alto) * -.09);transform-origin:50% 3.5%;z-index:3}
-.prenda:hover,.prenda:focus-visible{z-index:6!important}
+.prenda{position:relative;flex:none;height:var(--alto);aspect-ratio:3/4;margin:0 calc(var(--alto) * -.09);transform-origin:50% 7.4%;z-index:3}
+.prenda:hover,.prenda:focus-visible{z-index:5!important}
 .prenda img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;pointer-events:none}
 .prenda__gancho{position:absolute;left:50%;top:0;width:34%;translate:-50% 0;height:auto;z-index:1}
 .prenda__nombre{position:absolute;left:50%;bottom:-30px;translate:-50% 0;white-space:nowrap;font-size:13px;color:var(--gris);opacity:0;transition:opacity .25s}
