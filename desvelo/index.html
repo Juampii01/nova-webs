@@ -145,10 +145,15 @@ td:first-child{font-weight:700;font-variation-settings:"wdth" 118}
   .prenda{scroll-snap-align:center}
   .portada__texto,.talles,.envios{grid-template-columns:1fr}
   .envios dl{grid-template-columns:1fr}
-  .detalle{grid-template-columns:1fr;align-content:start;overflow:auto;padding-top:64px;background:var(--blanco)}
-  .detalle__foto{height:52vh}
+  .detalle{grid-template-columns:1fr;align-content:start;overflow:auto;padding-top:64px;gap:12px;background:var(--blanco)}
+  .detalle__foto{height:38svh}
   .detalle__lado{flex-direction:row;align-items:center;order:-1}
-  .detalle__info{order:1}
+  /* en el celular los colores van pegados a la foto: se ve el teñido mientras elegís */
+  .detalle__info{order:1;gap:12px}
+  .detalle__info h2{font-size:26px}
+  .detalle__info .grupo{order:1}
+  .detalle__info .sumar,.detalle__info .aviso{order:2}
+  .detalle__desc{order:3}
   .cerrar{white-space:nowrap}
   .etiquetas{right:-4%}
 }
